@@ -1,7 +1,7 @@
 module.exports={
     database:'analytics',
-    username:'remote_user',
-    password:'ntu2015',
-    host:'111.231.200.245',
+    username:'root',
+    password:'root',
+    host:'127.0.0.1',
     port:3306
 }
