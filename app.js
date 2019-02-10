@@ -29,7 +29,7 @@ app.use(
 ) //token验证设置
 
 app.use(cors({
-    origin: 'http://localhost:8080', //只允许 http://localhost:8080 这个域名的请求
+    origin: ['http://localhost:8080','http://analytics.jessezhu.cn'], //只允许 http://localhost:8080 这个域名的请求
     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
     maxAge: 5,
     credentials: true,
