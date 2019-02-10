@@ -1,4 +1,5 @@
 module.exports=async (ctx,next)=>{
+
     if(ctx.path==='/resources/images/wa.gif'){
         console.log(ctx.query);
         console.log(ctx.host);
@@ -11,5 +12,6 @@ module.exports=async (ctx,next)=>{
         console.log(ctx.hostname);
         console.log(ctx.ip);
     }
+
     await next()
 }
