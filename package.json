@@ -22,7 +22,8 @@
     "pug": "^2.0.0-rc.1",
     "sequelize": "^4.42.0",
     "jsonwebtoken": "^8.4.0",
-    "bcryptjs": "^2.4.3"
+    "bcryptjs": "^2.4.3",
+    "mysql2": "^1.6.5"
   },
   "devDependencies": {
     "nodemon": "^1.8.1"
