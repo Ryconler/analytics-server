@@ -37,6 +37,40 @@ module.exports.user=sequelize.define('user',{
     }
 }, {tableName: 'user',timestamps: false});
 
+module.exports.record=sequelize.define('record',{
+    id:{
+        type: Sequelize.INTEGER(11),
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    w_identification: {
+        type: Sequelize.STRING(255),
+        allowNull: false
+    },
+    open_time: {
+        type: Sequelize.INTEGER(20),
+    },
+    close_time: {
+        type: Sequelize.INTEGER(20),
+    },
+    ip: {
+        type: Sequelize.STRING(50),
+    },
+    url: {
+        type: Sequelize.STRING(255),
+    },
+    referrer: {
+        type: Sequelize.STRING(255),
+    },
+    os: {
+        type: Sequelize.STRING(255),
+    },
+    browser: {
+        type: Sequelize.STRING(255),
+    },
+}, {tableName: 'record',timestamps: false});
+
 
 
 

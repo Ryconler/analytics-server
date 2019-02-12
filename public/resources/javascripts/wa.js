@@ -41,6 +41,7 @@
         params.language = navigator.language || '';  //浏览器的语言
         params.platform=navigator.platform||'';  //操作系统
         params.userAgent=navigator.userAgent||'';  //客户机发送服务器的 user-agent 头部的值
+        params.appName=navigator.appName
         /*
         console.log("浏览器代码名:",navigator.appCodeName);
         console.log("浏览器的语言:",navigator.language);
@@ -77,5 +78,6 @@
         let i = new Image(1, 1);
         i.src = 'http://127.0.0.1:4000/resources/images/close.gif?closeTime='+closeTime;
     }
+    console.log(params);
 })();
 
