@@ -54,7 +54,7 @@
     //客户的网站标识
     if (_wa) {
         for (let i in _wa) {
-            if (_wa[i][0] === '_setAccount') {
+            if (_wa[i][0] === ' ') {
                 params.account = _wa[i][1];
             }
         }

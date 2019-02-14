@@ -62,8 +62,8 @@ class UserController {
                     ctx.body = {
                         message: '注册成功',
                         user: user,
-                        // 生成token返回客户端
-                        token: jwt.sign({data: user, exp: Math.floor(Date.now() / 1000) + 60 * 60}, secret)
+                        // 生成token返回客户7天免登陆
+                        token: jwt.sign({data: user, exp: Math.floor(Date.now() / 1000) + 60 * 60 }, secret)
                     }
                 } else {
                     ctx.status = 500

@@ -7,16 +7,15 @@ class Website{
      * @returns {Promise.<*>}
      */
     static async addWebsite(website){
-        const result=await websiteModel.create(website)
-        return result
+        return await websiteModel.create(website)
     }
     static async getWebsitesByUId(u_id){
-        const result=await websiteModel.findAll({
+        return await websiteModel.findAll({
             where:{
                 u_id
             }
         })
-        return result
+
     }
 }
 
