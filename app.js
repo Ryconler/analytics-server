@@ -34,7 +34,8 @@ app.use(
         .unless({path:[/^\/resources/,
                 /^\/api\/test/,
                 /^\/api\/users\/login/,
-                /^\/api\/users\/register/]})  // 请求这些url不需要token验证(正则表达式:/^xxx/表示以xxx开头)
+                /^\/api\/users\/register/,
+                /^\/api\/users\/username/,]})  // 请求这些url不需要token验证(正则表达式:/^xxx/表示以xxx开头)
 ) //token验证设置
 app.use(statics(__dirname + '/public'))
 app.use(views(__dirname + '/views', {

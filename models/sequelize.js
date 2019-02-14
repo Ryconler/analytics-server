@@ -44,7 +44,7 @@ module.exports.record=sequelize.define('record',{
         primaryKey: true,
         autoIncrement: true
     },
-    w_identification: {
+    w_unique_id: {
         type: Sequelize.STRING(255),
         allowNull: false
     },
@@ -70,6 +70,41 @@ module.exports.record=sequelize.define('record',{
         type: Sequelize.STRING(255),
     },
 }, {tableName: 'record',timestamps: false});
+
+module.exports.website=sequelize.define('website',{
+    id:{
+        type: Sequelize.INTEGER(11),
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    u_id:{
+        type: Sequelize.INTEGER(11),
+        allowNull: false,
+    },
+    unique_id: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+    },
+    domain: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+    },
+    index_url: {
+        type: Sequelize.STRING(255),
+    },
+    title: {
+        type: Sequelize.STRING(255),
+    },
+    create_date: {
+        type: Sequelize.STRING(20),
+        allowNull: false,
+    },
+    validate: {
+        type: Sequelize.STRING(1),
+        allowNull: false,
+    },
+}, {tableName: 'website',timestamps: false});
 
 
 

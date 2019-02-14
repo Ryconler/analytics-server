@@ -7,32 +7,16 @@ class User{
      * @returns {Promise.<*>}
      */
     static async createUser(user){
-        const result=await userModel.create({
-            username:user.username,
-            password:user.password,
-            email:user.email,
-            register_date:new Date().toLocaleString()
-        })
+        const result=await userModel.create(user)
         return result
     }
-    static async getUserById(id){
-        const result=await userModel.findOne({
-            where:{
-                id:id
-            }
-        })
-        return result
-    }
+
     static async getUserByUsername(username){
         const result=await userModel.findOne({
             where:{
                 username:username
             }
         })
-        return result
-    }
-    static async getUsers(){
-        const result=await userModel.findAll()
         return result
     }
 }

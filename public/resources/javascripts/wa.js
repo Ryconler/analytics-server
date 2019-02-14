@@ -21,11 +21,14 @@
     if (window && window.screen) {
         params.width = window.screen.width || 0;  //显示器屏幕宽度
         params.height = window.screen.height || 0;  //显示器屏幕高度
+
+        params.colorDepth=window.screen.colorDepth || 0  ;// 颜色深度
+        /*
         params.outerWidth = window.outerWidth || 0;  //窗口宽度
         params.outerHeight = window.outerHeight || 0;  //窗口高度
         params.innerWidth = window.innerWidth || 0;  //窗口内文档宽度
         params.innerHeight = window.innerHeight || 0;  //窗口内文档高度
-        /*
+
         console.log("显示器屏幕宽度:",window.screen.width);
         console.log("显示器屏幕高度:",window.screen.height);
         console.log("窗口宽度:",window.outerWidth);
@@ -78,6 +81,6 @@
         let i = new Image(1, 1);
         i.src = 'http://127.0.0.1:4000/resources/images/close.gif?closeTime='+closeTime;
     }
-    console.log(params);
+    // console.log(params);
 })();
 
