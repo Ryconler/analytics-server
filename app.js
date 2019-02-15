@@ -20,7 +20,7 @@ app.use(require('./middlewines/GetQuery'))   //解析请求query参数
 app.use(bodyparser({enableTypes: ['json', 'form', 'text']}))
 
 app.use(cors({
-    origin: '*',
+    origin: process.env.NODE_ENV==='production'?'http://analytics.jessezhu.cn':'http://localhost:8080',
     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
     maxAge: 5,
     credentials: true,
