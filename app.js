@@ -42,14 +42,6 @@ app.use(views(__dirname + '/views', {
     extension: 'pug'
 }))
 
-/*  打印时间
-app.use(async (ctx, next) => {
-  const date = new Date()
-  console.log(`${date.toLocaleString()}`)
-  await next()
-})
-*/
-
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(api.routes(), api.allowedMethods())
