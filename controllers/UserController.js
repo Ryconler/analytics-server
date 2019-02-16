@@ -106,19 +106,12 @@ class UserController {
 
     static async getUser(ctx) {
         const token = ctx.header.authorization.split(' ')[1]  //获取jwt
-        if (token) {
-            const payload = await jwt.verify(token, secret)  //获取jst的负载信息
-            // console.log(payload);
-            ctx.status = 200
-            ctx.body = {
-                message: '认证成功',
-                user:payload.data // 负载信息的data部分为之前签发时的data
-            }
-        } else {
-            ctx.status = 401
-            ctx.body = {
-                message: 'token认证错误'
-            }
+        const payload = await jwt.verify(token, secret)  //获取jst的负载信息
+        // console.log(payload);
+        ctx.status = 200
+        ctx.body = {
+            message: '认证成功',
+            user:payload.data // 负载信息的data部分为之前签发时的data
         }
     }
 

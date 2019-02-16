@@ -16,7 +16,7 @@ onerror(app)
 
 // middlewares
 app.use(logger())
-app.use(require('./middlewines/GetQuery'))   //解析请求query参数
+app.use(require('./middlewines/FilterWAQuery'))   //解析请求query参数
 app.use(bodyparser({enableTypes: ['json', 'form', 'text']}))
 
 app.use(cors({

@@ -1,32 +1,19 @@
 const recordModel=require('./sequelize').record
 
 class Record{
-    /**
-     * 用户
-     * @param user
-     * @returns {Promise.<*>}
-     */
+
     static async createRecord(record){
-        const result=await recordModel.create({
-            w_identification:record.w_identification,
-            open_time:Date.now(),
-            ip:record.ip,
-            url:record.url,
-            referrer:record.referrer,
-            os:record.os,
-            browser:record.browser,
-        })
-        return result
+        return await recordModel.create(record)
     }
-    static async addCloseTime(id){
-        const result=await recordModel.update({
+    static async addCloseTimeByUniqueId(w_unique_id){
+        return await recordModel.update({
             close_time:Date.now()
         },{
             where:{
-                id:id
+                w_unique_id
             }
         })
-        return result
+
     }
 }
 

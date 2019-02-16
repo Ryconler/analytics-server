@@ -1,11 +1,7 @@
 const userModel=require('./sequelize').user
 
 class User{
-    /**
-     * 用户
-     * @param user
-     * @returns {Promise.<*>}
-     */
+
     static async createUser(user){
         return await userModel.create(user)
 

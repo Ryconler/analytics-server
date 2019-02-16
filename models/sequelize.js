@@ -63,10 +63,22 @@ module.exports.record=sequelize.define('record',{
     referrer: {
         type: Sequelize.STRING(255),
     },
+    wxh: {
+        type: Sequelize.STRING(10),
+    },
+    depth: {
+        type: Sequelize.STRING(10),
+    },
+    device: {
+        type: Sequelize.STRING(10),
+    },
     os: {
         type: Sequelize.STRING(255),
     },
-    browser: {
+    browser_name: {
+        type: Sequelize.STRING(255),
+    },
+    browser_version: {
         type: Sequelize.STRING(255),
     },
 }, {tableName: 'record',timestamps: false});
@@ -86,7 +98,7 @@ module.exports.website=sequelize.define('website',{
         type: Sequelize.STRING(255),
         allowNull: false,
     },
-    domain: {
+    host: {
         type: Sequelize.STRING(255),
         allowNull: false,
     },

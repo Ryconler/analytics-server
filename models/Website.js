@@ -1,11 +1,7 @@
 const websiteModel=require('./sequelize').website
 
 class Website{
-    /**
-     * 网站
-     * @param website
-     * @returns {Promise.<*>}
-     */
+
     static async addWebsite(website){
         return await websiteModel.create(website)
     }
@@ -13,6 +9,15 @@ class Website{
         return await websiteModel.findAll({
             where:{
                 u_id
+            }
+        })
+
+    }
+
+    static async getWebsite(id){
+        return await websiteModel.findOne({
+            where:{
+                id
             }
         })
 
