@@ -9,7 +9,8 @@ let sequelize =new Sequelize(config.database,config.username,config.password,{
         min: 0,
         idle: 30000
     },
-    operatorsAliases: false
+    operatorsAliases: false,
+    logging: false
 });
 
 module.exports.user=sequelize.define('user',{

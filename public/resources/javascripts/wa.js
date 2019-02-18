@@ -1,6 +1,7 @@
 (function () {
 
     let params = {};
+
     //客户的网站标识
     if(_wa) {
         for(let i in _wa) {

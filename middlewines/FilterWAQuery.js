@@ -8,7 +8,7 @@ module.exports = async (ctx, next) => {
         const {device,os} = client.getDeviceAndOS(query.userAgent)
         const {browserName,browserVersion} = client.getBrowserInfo(query.userAgent,query.appName,query.appVersion)
         const record = {
-            w_unique_id: query.account,
+            w_unique_id: query.account || 'unknown',
             open_time: query.openTime,
             close_time: query.closeTime,
             ip: ctx.ip,
