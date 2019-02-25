@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken')
 const secret = require('../config/token-secret')
 const request = require('request-promise-native')
-const cheerio = require('cheerio')
+
 
 const websiteModel = require('../models/Website')
+const recordModel = require('../models/Record')
 
 
 class WebsiteController {
@@ -83,6 +84,31 @@ class WebsiteController {
 
     }
 
+    static async getPVToday (ctx){
+        const token = ctx.header.authorization.split(' ')[1]
+        const payload = await jwt.verify(token, secret)
+        const user = payload.data
+        const siteId = ctx.params.id
+        const website = await websiteModel.getWebsite(siteId)
+        if (website && website.u_id === user.id) {
+            try {
+                const pvNum =await recordModel.getPVToday(website.unique_id)
+                ctx.body={
+                    pvNum
+                }
+            } catch (e) {
+                ctx.status = 500
+                ctx.body = {
+                    message: '内部错误',
+                }
+            }
+        } else {
+            ctx.status = 401
+            ctx.body = {
+                message: '网站不属于你',
+            }
+        }
+    }
 }
 
 module.exports = WebsiteController

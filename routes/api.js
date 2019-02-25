@@ -17,5 +17,6 @@ router.post('/users/username', userCtrl.getUsername)  // 注册是获取用户�
 router.get('/websites/user', webCtrl.getWebsitesByUId)  // 获取单个用户所有网站
 router.post('/websites/website', webCtrl.addWebsite)  // 添加一个网站
 router.get('/websites/website/validate/:id',webCtrl.validateWebsite) // 检查网站代码是否安装正确
+router.get('/websites/website/pv-today/:id',webCtrl.getPVToday) // 获取网站当日PV
 
 module.exports = router

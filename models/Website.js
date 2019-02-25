@@ -1,5 +1,6 @@
 const websiteModel=require('./sequelize').website
 
+
 class Website{
 
     static async addWebsite(website){
@@ -13,17 +14,16 @@ class Website{
         })
 
     }
-
     static async getWebsite(id){
         return await websiteModel.findOne({
             where:{
                 id
             }
         })
-
     }
+
 }
 
-// console.log(new User().getUsers()[0]);
+
 module.exports=Website
 

@@ -1,7 +1,6 @@
 const recordModel=require('./sequelize').record
 
 class Record{
-
     static async createRecord(record){
         return await recordModel.create(record)
     }
@@ -13,10 +12,18 @@ class Record{
                 w_unique_id
             }
         })
-
+    }
+    static async getPVToday(w_unique_id){
+        return await recordModel.count({
+            where:{
+                w_unique_id
+            }
+        })
     }
 }
 
-// console.log(new User().getUsers()[0]);
+// (async function () {
+//     console.log(await Record.getPV('ripwugj5da'));
+// })()
 module.exports=Record
 
