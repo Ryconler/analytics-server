@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const secret = require('../config/token-secret')
 const userModel = require('../models/User')
-const registerValidator = require('../middlewines/Validator').register  //自定义的必填字段验证器
+const registerValidator = require('../utils/Validator').register  //自定义的必填字段验证器
 
 class UserController {
     static async login(ctx) {

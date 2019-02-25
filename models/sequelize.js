@@ -119,6 +119,8 @@ module.exports.website=sequelize.define('website',{
     },
 }, {tableName: 'website',timestamps: false});
 
+module.exports.Op = Sequelize.Op
+module.exports.sequelize = sequelize
 
 
 

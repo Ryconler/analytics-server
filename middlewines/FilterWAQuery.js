@@ -1,5 +1,5 @@
 const recordModel = require('../models/Record')
-const client =require('../middlewines/GetClientInfo')
+const client =require('../utils/GetClientInfo')
 
 module.exports = async (ctx, next) => {
     await next()
