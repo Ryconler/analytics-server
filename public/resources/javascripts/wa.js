@@ -24,12 +24,12 @@
   params.openTime = getCurrentTime()
   //Document对象数据
   if (document) {
-    params.domain = document.domain || '';
     params.url = document.URL || '';
     params.referrer = document.referrer || '';  //上一页url
   }
   //Window对象
   if (window && window.screen) {
+    params.host = window.location.host || '';  // host
     params.width = window.screen.width || 0;  //显示器屏幕宽度
     params.height = window.screen.height || 0;  //显示器屏幕高度
     params.colorDepth = window.screen.colorDepth || 0;// 颜色深度

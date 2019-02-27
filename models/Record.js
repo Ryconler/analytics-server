@@ -5,6 +5,7 @@ const sequelize = require('./sequelize').sequelize
 const todayDate = require('../utils/GetTodayDate')
 
 class Record {
+
   static async createRecord(record) {
     return await recordModel.create(record)
   }
@@ -46,8 +47,8 @@ class Record {
   }
 }
 
-(async function () {
-    console.log(await Record.getUVToday('xg08f9znie'));
-})()
+// (async function () {
+//     console.log(await Record.getUVToday('xg08f9znie'));
+// })()
 module.exports = Record
 

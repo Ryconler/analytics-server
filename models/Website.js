@@ -26,8 +26,18 @@ class Website {
     })
   }
 
+  static async getWebsiteByUniqueId(unique_id) {
+    return await websiteModel.findOne({
+      where: {
+        unique_id
+      },
+      raw: true
+    })
+  }
 }
 
-
+// (async function () {
+//   console.log(await Website.getWebsite('2'));
+// })()
 module.exports = Website
 
