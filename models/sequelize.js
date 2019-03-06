@@ -45,7 +45,7 @@ module.exports.record=sequelize.define('record',{
         primaryKey: true,
         autoIncrement: true
     },
-    w_unique_id: {
+    track_id: {
         type: Sequelize.STRING(255),
         allowNull: false
     },
@@ -95,7 +95,7 @@ module.exports.website=sequelize.define('website',{
         type: Sequelize.INTEGER(11),
         allowNull: false,
     },
-    unique_id: {
+    track_id: {
         type: Sequelize.STRING(255),
         allowNull: false,
     },

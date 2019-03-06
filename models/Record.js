@@ -3,6 +3,7 @@ const Op = require('./sequelize').Op
 const sequelize = require('./sequelize').sequelize
 
 const todayDate = require('../utils/GetTodayDate')
+const yesterdayDate = require('../utils/GetYesterdayDate')
 
 class Record {
 
@@ -10,32 +11,41 @@ class Record {
     return await recordModel.create(record)
   }
 
-  static async addCloseTimeByUniqueId(w_unique_id) {
+  static async addCloseTimeByTrackId(track_id) {
     return await recordModel.update({
       close_time: Date.now()
     }, {
       where: {
-        w_unique_id
+        track_id
       }
     })
   }
 
-  static async getPVToday(w_unique_id) {
+  static async getPVToday(track_id) {
     return await recordModel.count({
       where: {
-        w_unique_id,
+        track_id,
         open_time: {
           [Op.between]: todayDate
         }
       }
     })
   }
-
-  static async getUVToday(w_unique_id) {
+  static async getPVYesterday(track_id) {
+    return await recordModel.count({
+      where: {
+        track_id,
+        open_time: {
+          [Op.between]: yesterdayDate
+        }
+      }
+    })
+  }
+  static async getUVToday(track_id) {
     const ipCounts = await recordModel.findAll({
       attributes:[[sequelize.fn('COUNT', sequelize.col('ip')),'ipCount']],  // select count(ip) as ipCount
       where: {
-        w_unique_id,
+        track_id,
         open_time: {
           [Op.between]: todayDate
         }
@@ -44,6 +54,42 @@ class Record {
       raw: true
     })  // => [ { count: 1 }, { count: 25 } ]
     return ipCounts.length  // ip分组数
+  }
+  static async getUVYesterday(track_id) {
+    const ipCounts = await recordModel.findAll({
+      attributes:[[sequelize.fn('COUNT', sequelize.col('ip')),'ipCount']],  // select count(ip) as ipCount
+      where: {
+        track_id,
+        open_time: {
+          [Op.between]: yesterdayDate
+        }
+      },
+      group: 'ip',  // group by ip
+      raw: true
+    })  // => [ { count: 1 }, { count: 25 } ]
+    return ipCounts.length  // ip分组数
+  }
+  static async getRecordsToday(track_id) {
+    return await recordModel.findAll({
+      where: {
+        track_id,
+        open_time: {
+          [Op.between]: todayDate
+        }
+      },
+      raw: true
+    })
+  }
+  static async getRecordsYesterday(track_id) {
+    return await recordModel.findAll({
+      where: {
+        track_id,
+        open_time: {
+          [Op.between]: yesterdayDate
+        }
+      },
+      raw: true
+    })
   }
 }
 

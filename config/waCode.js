@@ -1,6 +1,6 @@
-module.exports = function (code) {
+module.exports = function (trackId) {
     return `var _wa= _wa || [ ];
-_wa.push(['_setAccount', '${code}']);
+_wa.push(['track', '${trackId}']);
 (function() {
 var newScript = document.createElement('script');
 newScript.async = true;

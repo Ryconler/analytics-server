@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const secret = require('../config/token-secret')
+const secret = require('../config/tokenSecret')
 const userModel = require('../models/User')
 const registerValidator = require('../utils/Validator').register  //自定义的必填字段验证器
 

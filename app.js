@@ -20,7 +20,7 @@ app.use(require('./middlewines/FilterWAQuery'))   //解析请求query参数
 app.use(bodyparser({enableTypes: ['json', 'form', 'text']}))
 
 app.use(cors({
-    origin: process.env.NODE_ENV==='production'?'http://analytics.jessezhu.cn':'http://localhost:8080',
+    origin: process.env.NODE_ENV==='production'?'http://analytics.jessezhu.cn':'*',
     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
     maxAge: 5,
     credentials: true,
@@ -30,7 +30,7 @@ app.use(cors({
 /* 坑坑坑坑坑！一定要先设置跨域再设置token，不然options请求永远不通过！！！ */
 app.use(require('./middlewines/TokenError'))  //没有进行token验证的错误处理
 app.use(
-    jwt({ secret: require('./config/token-secret') })  // 自定义密钥配置token的加密
+    jwt({ secret: require('./config/tokenSecret') })  // 自定义密钥配置token的加密
         .unless({path:[/^\/resources/,
                 /^\/api\/test/,
                 /^\/api\/users\/login/,

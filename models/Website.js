@@ -26,10 +26,10 @@ class Website {
     })
   }
 
-  static async getWebsiteByUniqueId(unique_id) {
+  static async getWebsiteByTrackId(track_id) {
     return await websiteModel.findOne({
       where: {
-        unique_id
+        track_id
       },
       raw: true
     })
