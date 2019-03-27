@@ -1,10 +1,16 @@
 class TestController{
-    async getJson(ctx){
-        console.log(ctx.params);
+    static async getJson(ctx){
         ctx.body = {
-            title: 'koa2 jsons'
+            title: 'get json',
+            id:ctx.params.id
+        }
+    }
+    static async postJson(ctx){
+        ctx.body = {
+            title: 'post json',
+            body: ctx.request.body
         }
     }
 }
 
-module.exports=new TestController()
+module.exports=TestController

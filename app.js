@@ -11,44 +11,40 @@ const jwt=require('koa-jwt')
 const index = require('./routes/index')
 const api = require('./routes/api')
 
-// error handler
+/* 错误处理 */
 onerror(app)
-
-// middlewares
+app.use(require('./middlewines/CatchError'))
+/* 日志 */
 app.use(logger())
-app.use(require('./middlewines/FilterWAQuery'))   //解析请求query参数
-app.use(bodyparser({enableTypes: ['json', 'form', 'text']}))
-
+/* 跨域设置 */
 app.use(cors({
     origin: process.env.NODE_ENV==='production'?'http://analytics.jessezhu.cn':'*',
     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
     maxAge: 5,
-    credentials: true,
+    credentials: true,  // 跨域cookie
     allowMethods: ['GET', 'POST','PUT','DELETE'],
     allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
-}))  //给前端的跨域请求设置
-/* 坑坑坑坑坑！一定要先设置跨域再设置token，不然options请求永远不通过！！！ */
-app.use(require('./middlewines/TokenError'))  //没有进行token验证的错误处理
-app.use(
-    jwt({ secret: require('./config/tokenSecret') })  // 自定义密钥配置token的加密
-        .unless({path:[/^\/resources/,
-                /^\/api\/test/,
-                /^\/api\/users\/login/,
-                /^\/api\/users\/register/,
-                /^\/api\/users\/username/,]})  // 请求这些url不需要token验证(正则表达式:/^xxx/表示以xxx开头)
-) //token验证设置
-app.use(statics(__dirname + '/public'))
-app.use(views(__dirname + '/views', {
-    extension: 'pug'
 }))
-
-// routes
+/* 数据统计中间件 */
+app.use(require('./middlewines/FilterWAQuery'))
+/* token验证设置，踩坑，一定要先设置跨域再设置token，不然options请求永远不通过！！！ */
+app.use(require('./middlewines/TokenError'))  //没有进行token验证的错误处理
+const unlessURL = [
+    /^\/resources/,
+    /^\/api\/test/,
+    /^\/api\/users\/login/,
+    /^\/api\/users\/register/,
+    /^\/api\/users\/username/,
+]  //不用进行token验证的url
+app.use(jwt({ secret: require('./config/tokenSecret') }).unless({path: unlessURL}))
+/* 静态资源 */
+app.use(statics(__dirname + '/public'))
+/* 默认视图渲染 */
+app.use(views(__dirname + '/views', {extension: 'pug'}))
+/* post提交数据body解析 */
+app.use(bodyparser({enableTypes: ['json', 'form', 'text']}))
+/* API路由 */
 app.use(index.routes(), index.allowedMethods())
 app.use(api.routes(), api.allowedMethods())
-
-// error-handling
-app.on('error', (err, ctx) => {
-    console.error('server error', err, ctx)
-});
 
 module.exports = app

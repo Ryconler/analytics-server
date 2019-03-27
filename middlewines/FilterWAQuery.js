@@ -1,6 +1,6 @@
 const recordModel = require('../models/Record')
 const websiteModel = require('../models/Website')
-const client = require('../utils/GetClientInfo')
+const clientUtil = require('../utils/ClientUtil')
 
 module.exports = async (ctx, next) => {
   await next()
@@ -8,8 +8,8 @@ module.exports = async (ctx, next) => {
     const query = ctx.query
     const website = await websiteModel.getWebsiteByTrackId(query.account)
     if (website && website.host === query.host) {  // 判断该TrackId是否属于该域名
-      const {device, os} = client.getDeviceAndOS(query.userAgent)
-      const {browserName, browserVersion} = client.getBrowserInfo(query.userAgent, query.appName, query.appVersion)
+      const {device, os} = clientUtil.getDeviceAndOS(query.userAgent)
+      const {browserName, browserVersion} = clientUtil.getBrowserInfo(query.userAgent, query.appName, query.appVersion)
       const record = {
         track_id: query.account || 'unknown',
         open_time: query.openTime,
@@ -24,7 +24,7 @@ module.exports = async (ctx, next) => {
         browser_name: browserName,
         browser_version: browserVersion
       }
-      recordModel.createRecord(record)
+      await recordModel.createRecord(record)
     }
   }
 }

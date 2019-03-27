@@ -6,11 +6,7 @@ function validateUsr(val) {
     val = val.trim()
     if (val.length < 3 || val.length > 10) {
         return false
-    } else if (val.indexOf(' ') >= 0) {
-        return false
-    } else {
-        return true
-    }
+    } else return val.indexOf(' ') < 0;
 }
 
 function validatePsw(val) {
@@ -19,11 +15,7 @@ function validatePsw(val) {
     const reg = /^[\x20-\x7E]*$/;  //包含所有ASCII字符（含空格）
     if (val.length < 6 || val.length > 16) {
         return false
-    } else if (!reg.test(val)) {
-        return false
-    } else {
-        return true
-    }
+    } else return reg.test(val);
 }
 
 function validateEml(val) {
@@ -32,11 +24,7 @@ function validateEml(val) {
     const reg = /^[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$/;  //邮箱格式
     if (val.length === 0) {
         return false
-    } else if (!reg.test(val)) {
-        return false
-    } else {
-        return true
-    }
+    } else return reg.test(val);
 }
 
 module.exports.register = function (...args) {

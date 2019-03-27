@@ -37,7 +37,7 @@ class Website {
 }
 
 // (async function () {
-//   console.log(await Website.getWebsite('2'));
+//   console.log(await Website.getWebsitesByUId('2'));
 // })()
 module.exports = Website
 
