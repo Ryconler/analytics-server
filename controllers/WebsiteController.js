@@ -60,15 +60,22 @@ class WebsiteController {
         const website = await websiteModel.getWebsite(siteId)
         if (website && website.u_id === user.id) {
             /* 通过抓取网站页面，分析是否安装了正确的统计代码 */
-            let htmlString = await request('http://' + website.index_url)
-            let code = require('../config/waCode')(website.track_id);  //正确代码
-            htmlString = htmlString.replace(/\s|;+/g, '');  // 去除所有空格和分号
-            code = code.replace(/\s|;+/g, '');
-            if (htmlString.indexOf(code) !== -1) {
-                ctx.body = {
-                    message: '检测到已成功安装',
+            try {
+                let htmlString = await request('http://' + website.index_url)
+                let code = require('../config/waCode')(website.track_id);  //正确代码
+                htmlString = htmlString.replace(/\s|;+/g, '');  // 去除所有空格和分号
+                code = code.replace(/\s|;+/g, '');
+                if (htmlString.indexOf(code) !== -1) {
+                    ctx.body = {
+                        message: '检测到已成功安装',
+                    }
+                } else {
+                    ctx.body = {
+                        message: '未检测到代码',
+                    }
                 }
-            } else {
+            }
+            catch (e) {
                 ctx.body = {
                     message: '未检测到代码',
                 }

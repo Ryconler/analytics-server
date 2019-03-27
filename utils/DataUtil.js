@@ -6,8 +6,8 @@ const dateUtil = require('./DateUtil')
 module.exports.getOverview = async function (uid) {
     const websites = await websitedModel.getWebsitesByUId(uid)
     for(let website of websites){
-        website.pvToday = await recordModel.getPV(website.track_id, dateUtil.getDayPre(0), dateUtil.getDaySuf(0))
-        website.uvToday = await recordModel.getUV(website.track_id, dateUtil.getDayPre(0), dateUtil.getDaySuf(0))
+        website.pvToday = await recordModel.getPV(website.track_id, dateUtil.getDatePre(0), dateUtil.getDateSuf(0))
+        website.uvToday = await recordModel.getUV(website.track_id, dateUtil.getDatePre(0), dateUtil.getDateSuf(0))
     }
     return websites
 }

@@ -17,8 +17,8 @@ router.post('/users/username', userCtrl.getUsername)  // 注册是获取用户�
 /* 网站部分 */
 router.get('/websites/website/:id',webCtrl.getWebsite) // 获取某个具体网站
 router.get('/websites/user',webCtrl.getWebsites)  // 获取用户所有网站
-router.get('/websites/overview', webCtrl.getOverview)  // 获取单个用户所有网站总览信息
 router.get('/websites/website/validate/:id',webCtrl.validateWebsite) // 检查网站代码是否安装正确
+router.get('/websites/overview', webCtrl.getOverview)  // 获取单个用户所有网站总览信息
 router.get('/websites/website/statistics/:id',webCtrl.getStatisticsByDate)  // 获取具体网站的概况统计
 router.post('/websites/website', webCtrl.addWebsite)  // 添加一个网站
 

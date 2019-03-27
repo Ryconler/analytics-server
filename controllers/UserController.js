@@ -74,16 +74,15 @@ class UserController {
     }
 
     static async getUsername(ctx) {
-        const params = ctx.request.body
-        if (params.username) {
-            const user = await userModel.getUserByUsername(params.username)  //获取数据库中的用户
+        const body = ctx.request.body
+        if (body.username) {
+            const user = await userModel.getUserByUsername(body.username)  //获取数据库中的用户
             if (user) {  //用户存在
                 ctx.status = 403
                 ctx.body = {
                     message: '用户名已存在',
                 }
             } else {  //用户不存在
-                ctx.status = 200
                 ctx.body = {
                     message: '用户不存在，可以注册',
                 }
