@@ -45,7 +45,7 @@ module.exports.record=sequelize.define('record',{
         primaryKey: true,
         autoIncrement: true
     },
-    track_id: {
+    config: {
         type: Sequelize.STRING(255),
         allowNull: false
     },
@@ -54,6 +54,12 @@ module.exports.record=sequelize.define('record',{
     },
     close_time: {
         type: Sequelize.INTEGER(20),
+    },
+    urls : {
+        type: Sequelize.STRING(2550),
+    },
+    open_times : {
+        type: Sequelize.STRING(2550),
     },
     ip: {
         type: Sequelize.STRING(50),
@@ -95,7 +101,7 @@ module.exports.website=sequelize.define('website',{
         type: Sequelize.INTEGER(11),
         allowNull: false,
     },
-    track_id: {
+    config: {
         type: Sequelize.STRING(255),
         allowNull: false,
     },

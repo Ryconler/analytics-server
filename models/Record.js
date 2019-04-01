@@ -7,32 +7,35 @@ class Record {
   static async createRecord(record) {
     return await recordModel.create(record)
   }
-
-  static async addCloseTimeByTrackId(track_id) {
+  static async updateRecord(config,open_time,close_time,urls,open_times){
     return await recordModel.update({
-      close_time: Date.now()
-    }, {
-      where: {
-        track_id
+      close_time: close_time,
+      urls: urls,
+      open_times: open_times
+    },{
+      where:{
+        config,
+        open_time
       }
     })
   }
 
-  static async getPV(track_id,preDate,sufDate) {
+
+  static async getPV(config,preDate,sufDate) {
     return await recordModel.count({
       where: {
-        track_id,
+        config,
         open_time: {
           [Op.between]: [preDate,sufDate]
         }
       }
     })
   }
-  static async getUV(track_id,preDate,sufDate) {
+  static async getUV(config,preDate,sufDate) {
     const ipCounts = await recordModel.findAll({
       attributes:[[sequelize.fn('COUNT', sequelize.col('ip')),'ipCount']],  // select count(ip) as ipCount
       where: {
-        track_id,
+        config,
         open_time: {
           [Op.between]: [preDate,sufDate]
         }
@@ -43,7 +46,31 @@ class Record {
     return ipCounts.length  // ip分组数
   }
 
+  static async getRecordsByDate(config,preTime,sufTime) {
+    return await recordModel.findAll({
+      where: {
+        config,
+        open_time: {
+          [Op.between]: [preTime,sufTime]
+        }
+      },
+      raw: true
+    })  // => [ { count: 1 }, { count: 25 } ]
+  }
+  static async getLimitRecords(config,offset,limit) {
+    return await recordModel.findAll({
+      where: {
+        config
+      },
+      order: [['open_time', 'DESC']],
+      offset,
+      limit,
+      raw: true
+    })  // => [ { count: 1 }, { count: 25 } ]
+  }
 }
-
+// (async ()=>{
+//   console.log(await Record.getPV('1553948120222', '1553948120222'));
+// })()
 module.exports = Record
 

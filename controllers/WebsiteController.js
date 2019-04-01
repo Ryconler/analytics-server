@@ -12,11 +12,12 @@ class WebsiteController {
         const website = await websiteModel.getWebsite(ctx.params.id)
         if (website && website.u_id === user.id) {
             ctx.body = {
+                status: 2,
                 website
             }
         } else {
-            ctx.status = 401
             ctx.body = {
+                status: 4,
                 message: '网站不属于你'
             }
         }
@@ -26,6 +27,7 @@ class WebsiteController {
         const user = tokenUtil.getPayload(ctx).data // 负载信息的data部分为之前签发时的data
         const websites = await websiteModel.getWebsitesByUId(user.id)
         ctx.body = {
+            status: 2,
             websites
         }
     }
@@ -36,7 +38,7 @@ class WebsiteController {
         if (params.host && params.index_url) {
             let website = {
                 u_id: user.id,
-                track_id: Math.random().toString(36).substr(2, 10), // 随机生成10位的数字英文字符串
+                config: 'WA-' + Math.random().toString(36).substr(2, 10).toUpperCase() + '-' + user.id, // 随机生成10位的数字英文字符串加上用户id
                 host: params.host,
                 index_url: params.index_url,
                 title: params.title,
@@ -44,8 +46,8 @@ class WebsiteController {
                 validate: '0'
             }
             website = await websiteModel.addWebsite(website)
-            ctx.status = 200
             ctx.body = {
+                status: 2,
                 message: '添加成功',
                 website: website,
                 user: user,
@@ -62,27 +64,29 @@ class WebsiteController {
             /* 通过抓取网站页面，分析是否安装了正确的统计代码 */
             try {
                 let htmlString = await request('http://' + website.index_url)
-                let code = require('../config/waCode')(website.track_id);  //正确代码
+                let code = require('../config/waCode')(website.config);  //正确代码
                 htmlString = htmlString.replace(/\s|;+/g, '');  // 去除所有空格和分号
                 code = code.replace(/\s|;+/g, '');
                 if (htmlString.indexOf(code) !== -1) {
                     ctx.body = {
+                        status: 2,
                         message: '检测到已成功安装',
                     }
                 } else {
                     ctx.body = {
+                        status: 2,
                         message: '未检测到代码',
                     }
                 }
-            }
-            catch (e) {
+            } catch (e) {
                 ctx.body = {
+                    status: 2,
                     message: '未检测到代码',
                 }
             }
         } else {
-            ctx.status = 403
             ctx.body = {
+                status: 4,
                 message: '网站不属于你',
             }
         }
@@ -93,9 +97,10 @@ class WebsiteController {
         const user = tokenUtil.getPayload(ctx).data
         const overview = await dataUtil.getOverview(user.id)
         ctx.body = {
+            status: 2,
             message: '获取成功',
             user,
-            overview: overview,
+            overview
         }
     }
 
@@ -105,16 +110,52 @@ class WebsiteController {
         if (siteId && date) {
             const statistics = await dataUtil.getStatisticsByDate(siteId, date)
             ctx.body = {
+                status: 2,
                 message: '获取成功',
                 statistics: statistics
             }
         } else {
-            ctx.status = 400
             ctx.body = {
+                status: 4,
                 message: '缺少参数'
             }
         }
 
+    }
+
+    static async getLimitRecords(ctx) {
+        const siteId = ctx.params.id
+        const page = ctx.query.page
+        const limit = 10
+        const offset = limit * (page - 1)
+        if (siteId && page ) {
+            const website = await websiteModel.getWebsite(siteId)
+            if(website){
+                const records = await recordModel.getLimitRecords(website.config,offset,limit)
+                records.forEach(record=>{
+                    const openTime = parseInt(record.open_time)
+                    const closeTime = parseInt(record.close_time)
+                    const urlsArr = (record.urls || '').split(',')
+                    const openTimesArr = (record.urls || '').split(',')
+                    record.open_time = dateUtil.toTimeString(openTime)
+                    record.duration = closeTime ? dateUtil.toMinutesString((closeTime-openTime)/1000) : '正在访问'
+                    record.entrance = urlsArr[0]
+                    record.visitPages = urlsArr.length
+                    record.urls = urlsArr
+                    record.open_times = openTimesArr
+                })
+                ctx.body = {
+                    status: 2,
+                    message: '获取成功',
+                    records
+                }
+            }
+        } else {
+            ctx.body = {
+                status: 4,
+                message: '缺少参数'
+            }
+        }
     }
 
 }
