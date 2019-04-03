@@ -165,16 +165,20 @@ class WebsiteController {
             const records = await recordModel.getRecordsByIp(website.config, ip)
             const todayPre = dateUtil.getTimePre(0)
             const todaySuf = dateUtil.getTimeSuf(0)
-            let isOld = false
+            let allVisit = 0
             let todayVisit = 0
+            let isOld = false
             records.forEach(record => {
-                if(record.ip === ip){
-                    isOld = true
+                if (record.ip === ip) {
+                    allVisit++
                 }
                 if (record.open_time >= todayPre && record.open_time <= todaySuf) {
-                    todayVisit ++
+                    todayVisit++
                 }
             })
+            if(allVisit>1){
+                isOld = true
+            }
             ctx.body = {
                 status: 2,
                 isOld,
