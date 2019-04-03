@@ -169,9 +169,7 @@ class WebsiteController {
             let todayVisit = 0
             let isOld = false
             records.forEach(record => {
-                if (record.ip === ip) {
-                    allVisit++
-                }
+                allVisit++
                 if (record.open_time >= todayPre && record.open_time <= todaySuf) {
                     todayVisit++
                 }
