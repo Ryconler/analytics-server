@@ -55,6 +55,9 @@ module.exports.record=sequelize.define('record',{
     close_time: {
         type: Sequelize.INTEGER(20),
     },
+    url : {
+        type: Sequelize.STRING(255),
+    },
     urls : {
         type: Sequelize.STRING(2550),
     },
@@ -64,7 +67,10 @@ module.exports.record=sequelize.define('record',{
     ip: {
         type: Sequelize.STRING(50),
     },
-    url: {
+    address: {
+        type: Sequelize.STRING(255),
+    },
+    service: {
         type: Sequelize.STRING(255),
     },
     referrer: {

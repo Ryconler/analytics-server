@@ -1,3 +1,4 @@
+/* 检验代码是否安装时爬虫使用 */
 module.exports = function (config) {
     return `var _wa= _wa || [ ];
 _wa.push(['config', '${config}']);

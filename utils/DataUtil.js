@@ -28,7 +28,7 @@ module.exports.getOverview = async function (uid) {
         })
         website.pv = pv
         website.uv = ips.length
-        website.br = (100 * (singlePage / pv).toFixed(3) || 100) + '%'
+        website.br = (100 * (singlePage / pv) || 100).toFixed(1) + '%'
         const adSeconds = Math.round(duration / pv / 1000) || 0
         let ad = ''
         if (adSeconds > 59) {
@@ -72,7 +72,7 @@ module.exports.getStatisticsByDate = async function (siteId, date) {
         return {
             pv: pv,
             uv: ips.length,
-            br: (100 * (singlePage / pv).toFixed(3) || 100) + '%',
+            br: (100 * (singlePage / pv) || 100).toFixed(1) + '%',
             ad: dateUtil.toMinutesString(adSeconds)
         }
     }

@@ -128,18 +128,17 @@ class WebsiteController {
         const page = ctx.query.page
         const limit = 10
         const offset = limit * (page - 1)
-        if (siteId && page ) {
+        if (siteId && page) {
             const website = await websiteModel.getWebsite(siteId)
-            if(website){
-                const records = await recordModel.getLimitRecords(website.config,offset,limit)
-                records.forEach(record=>{
+            if (website) {
+                const records = await recordModel.getLimitRecords(website.config, offset, limit)
+                records.forEach(record => {
                     const openTime = parseInt(record.open_time)
                     const closeTime = parseInt(record.close_time)
                     const urlsArr = (record.urls || '').split(',')
-                    const openTimesArr = (record.urls || '').split(',')
+                    const openTimesArr = (record.open_times || '').split(',')
                     record.open_time = dateUtil.toTimeString(openTime)
-                    record.duration = closeTime ? dateUtil.toMinutesString((closeTime-openTime)/1000) : '正在访问'
-                    record.entrance = urlsArr[0]
+                    record.duration = closeTime ? dateUtil.toMinutesString((closeTime - openTime) / 1000) : '正在访问'
                     record.visitPages = urlsArr.length
                     record.urls = urlsArr
                     record.open_times = openTimesArr
@@ -149,6 +148,37 @@ class WebsiteController {
                     message: '获取成功',
                     records
                 }
+            }
+        } else {
+            ctx.body = {
+                status: 4,
+                message: '缺少参数'
+            }
+        }
+    }
+
+    static async getIpInfo(ctx) {
+        const siteId = ctx.params.id
+        const ip = ctx.query.ip
+        if (siteId && ip) {
+            const website = await websiteModel.getWebsite(siteId)
+            const records = await recordModel.getRecordsByIp(website.config, ip)
+            const todayPre = dateUtil.getTimePre(0)
+            const todaySuf = dateUtil.getTimeSuf(0)
+            let isOld = false
+            let todayVisit = 0
+            records.forEach(record => {
+                if(record.ip === ip){
+                    isOld = true
+                }
+                if (record.open_time >= todayPre && record.open_time <= todaySuf) {
+                    todayVisit ++
+                }
+            })
+            ctx.body = {
+                status: 2,
+                isOld,
+                todayVisit
             }
         } else {
             ctx.body = {

@@ -1,23 +1,10 @@
 (function () {
     const dateNow = Date.now()
-
-    /* 时间转化 */
-    function getTimeString(dateTime) {
-        const date = new Date(dateTime)
-        const year = date.getFullYear()
-        const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
-        const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
-        const hour = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
-        const minute = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
-        const second = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
-        return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
-    }
+    const server = 'http://127.0.0.1:4000'
 
     /* cookie */
     function setCookie(key, value) {
-        let date = new Date()
-        date.setTime(dateNow + 24 * 3600 * 1000); // 一天后
-        document.cookie = key + "=" + value + ";expires=" + date.toUTCString()  //设置cookie，默认失效时间为一天
+        document.cookie = key + "=" + value  //不设置过期时间，默认为关闭浏览器后清除（关闭标签页不清除）
     }
 
     function getCookie(key) {
@@ -37,6 +24,28 @@
         document.cookie = key + "=v; expires =" + date.toUTCString();//设置cookie
     }
 
+    /* 获取用户的ip和地区信息 */
+    function getAddress(callback) {
+        const xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("microsoft.XMLHttp")
+        const url = 'https://api.ttt.sh/ip/qqwry/?type=txt'
+        xhr.open("get", url, true);
+        xhr.send();
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                const res = xhr.responseText.split(',')
+                const ip = res[0] || '未知'
+                const address = res[1].split(' ')[0] || '未知'
+                const service = res[1].split(' ')[1] || '未知'
+                callback && callback([ip, address, service])
+            } else if (xhr.readyState === 4 && xhr.status !== 200) {
+                const ip = '未知'
+                const address = '未知'
+                const service = '未知'
+                callback && callback([ip, address, service])
+            }
+        }
+    }
+
     /* params拼接 */
     function params2string(params) {
         let args = '';
@@ -49,61 +58,50 @@
         return args
     }
 
-
     let params = {};
+    const key = 'wa_open'
     /* 网站标识 */
     _wa.forEach(function (item) {
         if (item[0] === 'config') {
             params.config = item[1];
         }
     })
-    /* 使用cookie记录页面跳转的历史 */
-    /*
-    let key = 'wa_open'
-    if (!sessionStorage.getItem(key)) {  // 关闭过浏览器或者第一次打开,sessionStorage没有记录
-        sessionStorage.setItem(key, dateNow.toString())  // 添加sessionStorage记录
-        delCookie(key)  // 删除上次打开时记录的cookie
-    }
-    let history = getCookie(key)
-    history = history ? history + ',' + dateNow : dateNow
-    setCookie(key, history)
-     */
-    let key = 'wa_open'
-    if (!sessionStorage.getItem(key)) {  // 关闭过浏览器或者第一次打开,sessionStorage没有记录
-        sessionStorage.setItem(key, dateNow.toString())  // 添加sessionStorage记录
-        /* 第一次打开记录额外信息 */
-        //Window对象
+    const openTime = getCookie(key)
+    /* 每次都要记录的信息 */
+    params.url = document.URL || '';
+    params.openTime = openTime || dateNow.toString() // 页面打开时间为第一次打开时间，用于进行追踪
+    if (!openTime) {  // 关闭过浏览器或者第一次打开,cookie没有记录
+        setCookie(key, dateNow.toString())  // 设置cookie
+        /* 只有第一次打开要记录的信息 */
         if (window && window.screen) {
             params.host = window.location.host || '';  // host
             params.width = window.screen.width || 0;  //显示器屏幕宽度
             params.height = window.screen.height || 0;  //显示器屏幕高度
             params.colorDepth = window.screen.colorDepth || 0;// 颜色深度
         }
-        //Navigator浏览器对象
         if (navigator) {
-            params.userAgent = navigator.userAgent || '';  //客户机发送服务器的 user-agent 头部的值
+            params.userAgent = navigator.userAgent;  //客户机发送服务器的 user-agent 头部的值
             params.appName = navigator.appName
             params.appVersion = navigator.appVersion
         }
+        params.referrer = document.referrer || '';  //上一页url，访问来源
+        getAddress(function (data) {
+            params.ip = data[0]
+            params.address = data[1]
+            params.province = data[2]
+            new Image(1, 1).src = server + '/resources/images/wa.gif?' + params2string(params);
+        })
+    } else {  // 不是第一次打开
+        new Image(1, 1).src = server + '/resources/images/wa.gif?' + params2string(params);
     }
-    //Document对象数据
-    if (document) {
-        params.url = document.URL || '';
-        params.referrer = document.referrer || '';  //上一页url
-    }
-    params.openTime = sessionStorage.getItem(key) // 页面打开时间为第一次打开时间
-
-    /* 发送打开页面后的请求 */
-    //通过Image对象请求后端脚本,实现跨域请求自己的服务器
-    new Image(1, 1).src = 'http://127.0.0.1:4000/resources/images/wa.gif?' + params2string(params);
 
     /* 关闭页面再发送一次关闭请求 */
     window.onbeforeunload = () => {
         let closeParams = {}
-        closeParams.openTime = sessionStorage.getItem(key)
+        closeParams.openTime = getCookie(key)
         closeParams.config = params.config
         closeParams.closeTime = Date.now().toString()
-        new Image(1, 1).src = 'http://127.0.0.1:4000/resources/images/wa.gif?' + params2string(closeParams) ;
+        new Image(1, 1).src = server + '/resources/images/wa.gif?' + params2string(closeParams);
     }
 })();
 
