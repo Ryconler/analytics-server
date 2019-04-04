@@ -1,7 +1,7 @@
 (function () {
     const dateNow = Date.now()
-    const server = 'http://analytics.server.jessezhu.cn'
-    // const server = 'http://127.0.0.1:4000'
+    // const server = 'http://analytics.server.jessezhu.cn'
+    const server = 'http://127.0.0.1:4000'
 
     /* cookie */
     function setCookie(key, value) {
@@ -81,9 +81,7 @@
             params.colorDepth = window.screen.colorDepth || 0;// 颜色深度
         }
         if (navigator) {
-            params.userAgent = navigator.userAgent;  //客户机发送服务器的 user-agent 头部的值
             params.appName = navigator.appName
-            params.appVersion = navigator.appVersion
         }
         params.referrer = document.referrer || '';  //上一页url，访问来源
         getAddress(function (data) {
@@ -104,5 +102,6 @@
         closeParams.closeTime = Date.now().toString()
         new Image(1, 1).src = server + '/resources/images/wa.gif?' + params2string(closeParams);
     }
+
 })();
 
