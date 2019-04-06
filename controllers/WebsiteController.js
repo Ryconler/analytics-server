@@ -137,7 +137,7 @@ class WebsiteController {
                     const closeTime = parseInt(record.close_time)
                     const urlsArr = (record.urls || '').split(',')
                     const openTimesArr = (record.open_times || '').split(',')
-                    record.open_time = dateUtil.toTimeString(openTime)
+                    record.open_time = openTime
                     record.duration = closeTime ? dateUtil.toMinutesString((closeTime - openTime) / 1000) : '正在访问'
                     record.visitPages = urlsArr.length
                     record.urls = urlsArr
