@@ -8,12 +8,36 @@ const recordModel = require('../models/Record')
 
 class WebsiteController {
     static async getWebsite(ctx) {
+        const query = ctx.query
         const user = tokenUtil.getPayload(ctx).data // 负载信息的data部分为之前签发时的data
         const website = await websiteModel.getWebsite(ctx.params.id)
         if (website && website.u_id === user.id) {
-            ctx.body = {
-                status: 2,
-                website
+            if(query.ip){
+                const records = await recordModel.getRecordsByIp(website.config, query.ip)
+                const todayPre = dateUtil.getTimePre(0)
+                const todaySuf = dateUtil.getTimeSuf(0)
+                let allVisit = 0
+                let thatDayVisit = 0
+                let isOld = false
+                records.forEach(record => {
+                    allVisit++
+                    if (record.open_time >= todayPre && record.open_time <= todaySuf) {
+                        thatDayVisit++
+                    }
+                })
+                if(allVisit>1){
+                    isOld = true
+                }
+                ctx.body = {
+                    status: 2,
+                    isOld,
+                    thatDayVisit
+                }
+            }else {
+                ctx.body = {
+                    status: 2,
+                    website
+                }
             }
         } else {
             ctx.body = {
@@ -123,30 +147,58 @@ class WebsiteController {
 
     }
 
+    static async getCompare(ctx) {
+        const siteId = ctx.params.id
+        const days = ctx.query.days
+        if (siteId && days) {
+            const compare = await dataUtil.getCompare(siteId, days)
+            ctx.body = {
+                status: 2,
+                message: '获取成功',
+                compare: compare
+            }
+        } else {
+            ctx.body = {
+                status: 4,
+                message: '缺少参数'
+            }
+        }
+
+    }
+
     static async getLimitRecords(ctx) {
         const siteId = ctx.params.id
         const page = ctx.query.page
         const limit = 10
-        const offset = limit * (page - 1)
-        if (siteId && page) {
+        if (siteId) {
             const website = await websiteModel.getWebsite(siteId)
             if (website) {
-                const records = await recordModel.getLimitRecords(website.config, offset, limit)
-                records.forEach(record => {
-                    const openTime = parseInt(record.open_time)
-                    const closeTime = parseInt(record.close_time)
-                    const urlsArr = (record.urls || '').split(',')
-                    const openTimesArr = (record.open_times || '').split(',')
-                    record.open_time = openTime
-                    record.duration = closeTime ? dateUtil.toMinutesString((closeTime - openTime) / 1000) : '正在访问'
-                    record.visitPages = urlsArr.length
-                    record.urls = urlsArr
-                    record.open_times = openTimesArr
-                })
-                ctx.body = {
-                    status: 2,
-                    message: '获取成功',
-                    records
+                if(page){
+                    const offset = limit * (page - 1)
+                    const records = await recordModel.getLimitRecords(website.config, offset, limit)
+                    records.forEach(record => {
+                        const openTime = parseInt(record.open_time)
+                        const closeTime = parseInt(record.close_time)
+                        const urlsArr = (record.urls || '').split(',')
+                        const openTimesArr = (record.open_times || '').split(',')
+                        record.open_time = openTime
+                        record.duration = closeTime ? dateUtil.toMinutesString((closeTime - openTime) / 1000) : '正在访问'
+                        record.visitPages = urlsArr.length
+                        record.urls = urlsArr
+                        record.open_times = openTimesArr
+                    })
+                    ctx.body = {
+                        status: 2,
+                        message: '获取成功',
+                        records
+                    }
+                }else {
+                    const count = await recordModel.getRecordsCount(website.config)
+                    ctx.body = {
+                        status: 2,
+                        message: '获取成功',
+                        count
+                    }
                 }
             }
         } else {
@@ -156,40 +208,6 @@ class WebsiteController {
             }
         }
     }
-
-    static async getIpInfo(ctx) {
-        const siteId = ctx.params.id
-        const ip = ctx.query.ip
-        if (siteId && ip) {
-            const website = await websiteModel.getWebsite(siteId)
-            const records = await recordModel.getRecordsByIp(website.config, ip)
-            const todayPre = dateUtil.getTimePre(0)
-            const todaySuf = dateUtil.getTimeSuf(0)
-            let allVisit = 0
-            let todayVisit = 0
-            let isOld = false
-            records.forEach(record => {
-                allVisit++
-                if (record.open_time >= todayPre && record.open_time <= todaySuf) {
-                    todayVisit++
-                }
-            })
-            if(allVisit>1){
-                isOld = true
-            }
-            ctx.body = {
-                status: 2,
-                isOld,
-                todayVisit
-            }
-        } else {
-            ctx.body = {
-                status: 4,
-                message: '缺少参数'
-            }
-        }
-    }
-
 }
 
 module.exports = WebsiteController

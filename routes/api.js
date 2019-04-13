@@ -2,6 +2,8 @@ const router = require('koa-router')()
 const testCtrl=require('../controllers/TestController')
 const userCtrl=require('../controllers/UserController')
 const webCtrl=require('../controllers/WebsiteController')
+const recordCtrl=require('../controllers/RecordController')
+const analCtrl=require('../controllers/AnalyticsController')
 
 router.prefix('/api')
 
@@ -20,9 +22,12 @@ router.get('/websites/user',webCtrl.getWebsites)  // 获取用户所有网站
 router.get('/websites/website/validate/:id',webCtrl.validateWebsite) // 检查网站代码是否安装正确
 router.get('/websites/overview', webCtrl.getOverview)  // 获取单个用户所有网站总览信息
 router.get('/websites/website/statistics/:id',webCtrl.getStatisticsByDate)  // 获取具体网站的概况统计
+router.get('/websites/website/compare/:id',webCtrl.getCompare)  // 获取具体网站在某个时间段的比较信息
 router.get('/websites/website/records/:id', webCtrl.getLimitRecords)  // 获取某个网站的所有记录
-router.get('/websites/website/ip/:id', webCtrl.getIpInfo)  // 获取某个网站关于某个ip的相关信息
 router.post('/websites/website', webCtrl.addWebsite)  // 添加一个网站
+
+/* 记录部分 */
+router.get('/records/more/:id',recordCtrl.getMore)  // 获取某个记录的更多信息
 
 
 module.exports = router

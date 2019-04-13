@@ -8,11 +8,17 @@ class Record {
         return await recordModel.create(record)
     }
 
-    static async updateRecord(config, open_time, close_time, urls, open_times) {
+    static async getRecordById(id){
+        return await recordModel.findOne({
+            where:{
+                id
+            }
+        })
+    }
+    static async updateRecord(config, open_time, newURL, newOpenTime) {
         return await recordModel.update({
-            close_time: close_time,
-            urls: urls,
-            open_times: open_times
+            urls: sequelize.fn('CONCAT', sequelize.col('urls'), ',', newURL),
+            open_times: sequelize.fn('CONCAT', sequelize.col('open_times'), ',', newOpenTime),
         }, {
             where: {
                 config,
@@ -21,6 +27,19 @@ class Record {
         })
     }
 
+    static async addCloseTime(config, open_time, close_time) {
+        return await recordModel.update({
+            close_time: close_time,
+        }, {
+            where: {
+                config,
+                open_time,
+                close_time: {
+                    [Op.lt]: close_time
+                }
+            }
+        })
+    }
 
     static async getRecordsByDate(config, preTime, sufTime) {
         return await recordModel.findAll({
@@ -46,6 +65,14 @@ class Record {
         })  // => [ { count: 1 }, { count: 25 } ]
     }
 
+    static async getRecordsCount(config){
+        return await recordModel.count({
+            where:{
+                config
+            }
+        })
+    }
+
     static async getRecordsByIp(config, ip) {
         return await recordModel.findAll({
             where: {
@@ -58,7 +85,7 @@ class Record {
 }
 
 // (async ()=>{
-//   console.log(await Record.findOneRecordByIp('q3bie416jl', '117.136.46.15'));
+//   console.log(await Record.getRecordsCount('WA-PEEIE2MMEV-1'));
 // })()
 module.exports = Record
 

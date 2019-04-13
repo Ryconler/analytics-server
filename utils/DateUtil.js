@@ -73,6 +73,26 @@ module.exports.getTimeSuf = function (num) {
     // console.log(new Date('2019-03-29 23:59:59').getTime());
     return date.getTime() - milliseconds + seconds * 1000 + minutes * 60 * 1000 + hours * 60 * 60 * 1000
 }
+/* 获取某个时间的0点数字 */
+module.exports.getTimePreByTime = function (time) {
+    const date = new Date(time)
+    const hours = date.getHours()
+    const minutes = date.getMinutes()
+    const seconds = date.getSeconds()
+    const milliseconds = date.getMilliseconds()
+    // console.log(new Date('2019-03-29 00:00:00').getTime());
+    return time - milliseconds - seconds * 1000 - minutes * 60 * 1000 - hours * 60 * 60 * 1000
+}
+/* 获取某时间的23:59:59点数字 */
+module.exports.getTimeSufByTime = function (time) {
+    const date = new Date(time)
+    const hours = 23 - date.getHours()
+    const minutes = 59 -date.getMinutes()
+    const seconds = 59 - date.getSeconds()
+    const milliseconds =  date.getMilliseconds()
+    // console.log(new Date('2019-03-29 23:59:59').getTime());
+    return time - milliseconds + seconds * 1000 + minutes * 60 * 1000 + hours * 60 * 60 * 1000
+}
 // console.log(this.getTimePre(1));
 // console.log(this.getTimeSuf(1));
 // console.log(this.toTimeString(12456789));
