@@ -8,13 +8,14 @@ class Record {
         return await recordModel.create(record)
     }
 
-    static async getRecordById(id){
+    static async getRecordById(id) {
         return await recordModel.findOne({
-            where:{
+            where: {
                 id
             }
         })
     }
+
     static async updateRecord(config, open_time, newURL, newOpenTime) {
         return await recordModel.update({
             urls: sequelize.fn('CONCAT', sequelize.col('urls'), ',', newURL),
@@ -65,9 +66,9 @@ class Record {
         })  // => [ { count: 1 }, { count: 25 } ]
     }
 
-    static async getRecordsCount(config){
+    static async getRecordsCount(config) {
         return await recordModel.count({
-            where:{
+            where: {
                 config
             }
         })
@@ -82,10 +83,26 @@ class Record {
             raw: true
         })
     }
+
+    static async getReIps(config) {
+        return await recordModel.findAll({
+            attributes: ['ip', [sequelize.fn('COUNT', sequelize.col('ip')), 'count']],
+            where: {
+                config
+            },
+            group: 'ip',
+            having: {
+                count: {
+                    [Op.gt]: 1
+                }
+            },
+            raw: true
+        })
+    }
 }
 
-// (async ()=>{
-//   console.log(await Record.getRecordsCount('WA-PEEIE2MMEV-1'));
+// (async () => {
+//     console.log(await Record.getOldIp('WA-PEEIE2MMEV-1'));
 // })()
 module.exports = Record
 

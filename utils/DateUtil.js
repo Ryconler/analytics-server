@@ -10,7 +10,18 @@ module.exports.getNowTime = function () {
     return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
 }
 /* 指定数字时间转字符串 */
+module.exports.toDayString = function (time) {
+    time = parseInt(time)
+    const date = new Date(time)
+    const year = date.getFullYear()
+    const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+    const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+    return year + '-' + month + '-' + day
+}
+/* 秒数转字符串 */
+/* 指定数字时间转字符串 */
 module.exports.toTimeString = function (time) {
+    time = parseInt(time)
     const date = new Date(time)
     const year = date.getFullYear()
     const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
@@ -35,6 +46,8 @@ module.exports.toMinutesString = function (seconds) {
 }
 /* 获取两个字符串时间的秒数差 */
 module.exports.getDiffSeconds = function (openTime, closeTime) {
+    openTime = parseInt(openTime)
+    closeTime = parseInt(closeTime)
     return (new Date(closeTime).getTime() - new Date(openTime).getTime()) / 1000
 }
 /* 获取某天的0点字符串 */

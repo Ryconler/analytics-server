@@ -12,7 +12,7 @@ class WebsiteController {
         const user = tokenUtil.getPayload(ctx).data // 负载信息的data部分为之前签发时的data
         const website = await websiteModel.getWebsite(ctx.params.id)
         if (website && website.u_id === user.id) {
-            if(query.ip){
+            if (query.ip) {
                 const records = await recordModel.getRecordsByIp(website.config, query.ip)
                 const todayPre = dateUtil.getTimePre(0)
                 const todaySuf = dateUtil.getTimeSuf(0)
@@ -25,7 +25,7 @@ class WebsiteController {
                         thatDayVisit++
                     }
                 })
-                if(allVisit>1){
+                if (allVisit > 1) {
                     isOld = true
                 }
                 ctx.body = {
@@ -33,7 +33,7 @@ class WebsiteController {
                     isOld,
                     thatDayVisit
                 }
-            }else {
+            } else {
                 ctx.body = {
                     status: 2,
                     website
@@ -129,10 +129,10 @@ class WebsiteController {
     }
 
     static async getStatisticsByDate(ctx) {
-        const siteId = ctx.params.id
+        const config = ctx.params.config
         const date = ctx.query.date
-        if (siteId && date) {
-            const statistics = await dataUtil.getStatisticsByDate(siteId, date)
+        if (config && date) {
+            const statistics = await dataUtil.getStatisticsByDate(config, date)
             ctx.body = {
                 status: 2,
                 message: '获取成功',
@@ -148,10 +148,10 @@ class WebsiteController {
     }
 
     static async getCompare(ctx) {
-        const siteId = ctx.params.id
+        const config = ctx.params.config
         const days = ctx.query.days
-        if (siteId && days) {
-            const compare = await dataUtil.getCompare(siteId, days)
+        if (config && days) {
+            const compare = await dataUtil.getCompare(config, days)
             ctx.body = {
                 status: 2,
                 message: '获取成功',
@@ -167,38 +167,35 @@ class WebsiteController {
     }
 
     static async getLimitRecords(ctx) {
-        const siteId = ctx.params.id
+        const config = ctx.params.config
         const page = ctx.query.page
         const limit = 10
-        if (siteId) {
-            const website = await websiteModel.getWebsite(siteId)
-            if (website) {
-                if(page){
-                    const offset = limit * (page - 1)
-                    const records = await recordModel.getLimitRecords(website.config, offset, limit)
-                    records.forEach(record => {
-                        const openTime = parseInt(record.open_time)
-                        const closeTime = parseInt(record.close_time)
-                        const urlsArr = (record.urls || '').split(',')
-                        const openTimesArr = (record.open_times || '').split(',')
-                        record.open_time = openTime
-                        record.duration = closeTime ? dateUtil.toMinutesString((closeTime - openTime) / 1000) : '正在访问'
-                        record.visitPages = urlsArr.length
-                        record.urls = urlsArr
-                        record.open_times = openTimesArr
-                    })
-                    ctx.body = {
-                        status: 2,
-                        message: '获取成功',
-                        records
-                    }
-                }else {
-                    const count = await recordModel.getRecordsCount(website.config)
-                    ctx.body = {
-                        status: 2,
-                        message: '获取成功',
-                        count
-                    }
+        if (config) {
+            if (page) {
+                const offset = limit * (page - 1)
+                const records = await recordModel.getLimitRecords(config, offset, limit)
+                records.forEach(record => {
+                    const openTime = parseInt(record.open_time)
+                    const closeTime = parseInt(record.close_time)
+                    const urlsArr = (record.urls || '').split(',')
+                    const openTimesArr = (record.open_times || '').split(',')
+                    record.open_time = openTime
+                    record.duration = closeTime ? dateUtil.toMinutesString((closeTime - openTime) / 1000) : '正在访问'
+                    record.visitPages = urlsArr.length
+                    record.urls = urlsArr
+                    record.open_times = openTimesArr
+                })
+                ctx.body = {
+                    status: 2,
+                    message: '获取成功',
+                    records
+                }
+            } else {
+                const count = await recordModel.getRecordsCount(config)
+                ctx.body = {
+                    status: 2,
+                    message: '获取成功',
+                    count
                 }
             }
         } else {
@@ -207,6 +204,44 @@ class WebsiteController {
                 message: '缺少参数'
             }
         }
+    }
+
+    static async getONVisitor(ctx) {
+        const config = ctx.params.config
+        const days = ctx.query.days
+        if (config && days) {
+            const onvisitor = await dataUtil.getONVisitor(config, days)
+            ctx.body = {
+                status: 2,
+                message: '获取成功',
+                onvisitor: onvisitor
+            }
+        } else {
+            ctx.body = {
+                status: 4,
+                message: '缺少参数'
+            }
+        }
+
+    }
+
+    static async getSVisitor(ctx) {
+        const config = ctx.params.config
+        const days = parseInt(ctx.query.days)
+        if (config && days) {
+            const svisitor = await dataUtil.getSVisitor(config, days)
+            ctx.body = {
+                status: 2,
+                message: '获取成功',
+                svisitor: svisitor
+            }
+        } else {
+            ctx.body = {
+                status: 4,
+                message: '缺少参数'
+            }
+        }
+
     }
 }
 

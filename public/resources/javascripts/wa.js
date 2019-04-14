@@ -27,15 +27,16 @@
     /* 获取用户的ip和地区信息 */
     function getAddress(callback) {
         const xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("microsoft.XMLHttp")
-        const url = 'https://api.ttt.sh/ip/qqwry/?type=txt'
+        const url = 'https://api.ttt.sh/ip/qqwry'
         xhr.open("get", url, true);
         xhr.send();
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4 && xhr.status === 200) {
-                const res = xhr.responseText.split(',')
-                const ip = res[0] || '未知'
-                const address = res[1].split(' ')[0] || '未知'
-                const service = res[1].split(' ')[1] || '未知'
+                const res = JSON.parse(xhr.responseText)
+                const ip = res.ip || '未知'
+                const location = decodeURIComponent(res.address)
+                const address = location.split(' ')[0] || '未知'
+                const service = location.split(' ')[1] || '未知'
                 callback && callback([ip, address, service])
             } else if (xhr.readyState === 4 && xhr.status !== 200) {
                 const ip = '未知'

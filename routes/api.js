@@ -21,9 +21,11 @@ router.get('/websites/website/:id',webCtrl.getWebsite) // 获取某个具体网�
 router.get('/websites/user',webCtrl.getWebsites)  // 获取用户所有网站
 router.get('/websites/website/validate/:id',webCtrl.validateWebsite) // 检查网站代码是否安装正确
 router.get('/websites/overview', webCtrl.getOverview)  // 获取单个用户所有网站总览信息
-router.get('/websites/website/statistics/:id',webCtrl.getStatisticsByDate)  // 获取具体网站的概况统计
-router.get('/websites/website/compare/:id',webCtrl.getCompare)  // 获取具体网站在某个时间段的比较信息
-router.get('/websites/website/records/:id', webCtrl.getLimitRecords)  // 获取某个网站的所有记录
+router.get('/websites/website/statistics/:config',webCtrl.getStatisticsByDate)  // 获取具体网站的概况统计
+router.get('/websites/website/compare/:config',webCtrl.getCompare)  // 获取具体网站在某个时间段的比较信息
+router.get('/websites/website/records/:config', webCtrl.getLimitRecords)  // 获取某个网站的所有记录
+router.get('/websites/website/novisitor/:config',webCtrl.getONVisitor)  // 获取具体网站在某个时间段的新旧访客信息
+router.get('/websites/website/svisitor/:config',webCtrl.getSVisitor)  // 获取具体网站的用户存留信息
 router.post('/websites/website', webCtrl.addWebsite)  // 添加一个网站
 
 /* 记录部分 */
