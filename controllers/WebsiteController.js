@@ -89,8 +89,8 @@ class WebsiteController {
             try {
                 let htmlString = await request('http://' + website.index_url)
                 let code = require('../config/waCode')(website.config);  //正确代码
-                htmlString = htmlString.replace(/\s|;+/g, '');  // 去除所有空格和分号
-                code = code.replace(/\s|;+/g, '');
+                htmlString = htmlString.replace(/\s|;|"|'+/g, '');  // 去除所有空格和分号和引号
+                code = code.replace(/\s|;|"|'+/g, '');
                 if (htmlString.indexOf(code) !== -1) {
                     ctx.body = {
                         status: 2,
