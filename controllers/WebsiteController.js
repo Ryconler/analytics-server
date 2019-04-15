@@ -74,9 +74,13 @@ class WebsiteController {
                 status: 2,
                 message: '添加成功',
                 website: website,
-                user: user,
             }
 
+        }else {
+            ctx.body = {
+                status: 4,
+                message: '添加失败',
+            }
         }
     }
 
@@ -87,7 +91,7 @@ class WebsiteController {
         if (website && website.u_id === user.id) {
             /* 通过抓取网站页面，分析是否安装了正确的统计代码 */
             try {
-                let htmlString = await request('http://' + website.index_url)
+                let htmlString = await request(website.index_url)
                 let code = require('../config/waCode')(website.config);  //正确代码
                 htmlString = htmlString.replace(/\s|;|"|'+/g, '');  // 去除所有空格和分号和引号
                 code = code.replace(/\s|;|"|'+/g, '');
@@ -98,13 +102,13 @@ class WebsiteController {
                     }
                 } else {
                     ctx.body = {
-                        status: 2,
+                        status: 4,
                         message: '未检测到代码',
                     }
                 }
             } catch (e) {
                 ctx.body = {
-                    status: 2,
+                    status: 4,
                     message: '未检测到代码',
                 }
             }
