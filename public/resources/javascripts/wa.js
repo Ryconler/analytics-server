@@ -1,7 +1,14 @@
 (function () {
-    const server = 'http://analytics.server.jessezhu.cn'
-    // const server = 'http://127.0.0.1:4000'
-
+    // const server = 'http://analytics.server.jessezhu.cn'
+    const server = 'http://127.0.0.1:4000'
+    const dateNow = Date.now()
+    const params = {};
+    /* 网站标识 */
+    waData.forEach(function (item) {
+        if (item[0] === 'config') {
+            params.config = item[1];
+        }
+    })
     /* cookie */
     function setCookie(key, value) {
         document.cookie = key + "=" + value  //不设置过期时间，默认为关闭浏览器后清除（关闭标签页不清除）
@@ -22,6 +29,18 @@
         let date = new Date(); //获取当前时间
         date.setTime(dateNow - 10000); //将date设置为过去的时间
         document.cookie = key + "=v; expires =" + date.toUTCString();//设置cookie
+    }
+
+    /* params拼接 */
+    function params2string(params) {
+        let args = '';
+        for (let p in params) {
+            if (args !== '') {  //最后一个参数后不用加&
+                args += '&';
+            }
+            args += p + '=' + encodeURIComponent(params[p]);  //encodeURIComponent:编码URL带参数
+        }
+        return args
     }
 
     /* 获取用户的ip和地区信息 */
@@ -65,65 +84,74 @@
         }
     }
 
-    /* params拼接 */
-    function params2string(params) {
-        let args = '';
-        for (let p in params) {
-            if (args !== '') {  //最后一个参数后不用加&
-                args += '&';
+
+    /* 为waData设置代理 */
+    function proxy(ipData){
+        waData = new Proxy(waData, {
+            set: function (target, property, value) {
+                if (value && typeof value==='object' && value[0] && value[1]){
+                    let customParams = {
+                        track: value[0],
+                        category: value[1],
+                        action: value[2] || '',
+                        label: value[3] || '',
+                        value: value[4] || '',
+                        config: params.config,
+                        url: document.URL,
+                        ip: ipData[0]
+                    }
+                    let img = new Image(1,1)
+                    img.src = server + '/resources/images/custom.gif?' + params2string(customParams)
+                }
+                return true
             }
-            args += p + '=' + encodeURIComponent(params[p]);  //encodeURIComponent:编码URL带参数
-        }
-        return args
-    }
-
-    const params = {};
-    const dateNow = Date.now()
-    const image = new Image(1,1)
-    /* 网站标识 */
-    window.waData.forEach(function (item) {
-        if (item[0] === 'config') {
-            params.config = item[1];
-        }
-    })
-    const key = 'wa_' + params.config
-
-    const waOpen = localStorage.getItem(key) || ''  // 型如：1586592534516,1586592534516  最近一次打开，第一次打开
-    const latestTime = parseInt(waOpen.split(',')[0]) || 0
-    const firstOpen = (dateNow - latestTime) > 1000 * 60 * 10  // 两次打开间隔小于10min仍属于同一次打开
-    const firstTime = firstOpen ? dateNow : waOpen.split(',')[1]
-    localStorage.setItem(key, dateNow + ',' +  firstTime)  // 更新wa_open
-    params.url = document.URL
-    params.openTime = firstTime
-    if (firstOpen) {  // 第一次打开
-        params.first = 1
-        params.referrer = document.referrer
-        params.host = window.location.host
-        params.width = window.screen.width || '';  //显示器屏幕宽度
-        params.height = window.screen.height || '';  //显示器屏幕高度
-        params.colorDepth = window.screen.colorDepth || '';// 颜色深度
-        params.appName = navigator.appName
-        getAddress(function (data) {
-            params.ip = data[0]
-            params.address = data[1]
-            params.service = data[2]
-            image.src = server + '/resources/images/wa.gif?' + params2string(params);
         })
-    }else {  // 不是第一次打开
-        params.first = 0
-        image.src = server + '/resources/images/wa.gif?' + params2string(params);
     }
 
-
-    /* 关闭页面再发送一次关闭请求 */
-    window.onbeforeunload = function (){
-        const closeParams = {
-            openTime: firstTime,
-            config: params.config,
-            closeTime: Date.now()
+    /* 初始化 */
+    function init(ipData) {
+        let image = new Image(1, 1)
+        const key = 'wa_' + params.config
+        const waOpen = localStorage.getItem(key) || ''  // 型如：1586592534516,1586592534516  最近一次打开，第一次打开
+        const latestTime = parseInt(waOpen.split(',')[0]) || 0
+        const firstOpen = (dateNow - latestTime) > 1000 * 60 * 10  // 两次打开间隔小于10min仍属于同一次打开
+        const firstTime = firstOpen ? dateNow : waOpen.split(',')[1]
+        localStorage.setItem(key, dateNow + ',' + firstTime)  // 更新wa_open
+        params.url = document.URL
+        params.openTime = firstTime
+        if (firstOpen) {  // 第一次打开
+            params.first = 1
+            params.referrer = document.referrer
+            params.host = window.location.host
+            params.width = window.screen.width || '';  //显示器屏幕宽度
+            params.height = window.screen.height || '';  //显示器屏幕高度
+            params.colorDepth = window.screen.colorDepth || '';// 颜色深度
+            params.appName = navigator.appName
+            params.ip = ipData[0]
+            params.address = ipData[1]
+            params.service = ipData[2]
+            image.src = server + '/resources/images/wa.gif?' + params2string(params);
+        } else {  // 不是第一次打开
+            params.first = 0
+            image.src = server + '/resources/images/wa.gif?' + params2string(params);
         }
-        image.src = server + '/resources/images/wa.gif?' + params2string(closeParams);
+
+        /* 关闭页面时 */
+        window.onbeforeunload = function () {
+            const closeParams = {
+                openTime: firstTime,
+                config: params.config,
+                closeTime: Date.now()
+            }
+            /* 再发送一次关闭请求 */
+            image.src = server + '/resources/images/wa.gif?' + params2string(closeParams);
+        }
     }
+
+    getAddress(function (data) {
+        init(data)
+        proxy(data)
+    })
 
 })();
 

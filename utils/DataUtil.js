@@ -1,5 +1,6 @@
 const websitedModel = require('../models/Website')
 const recordModel = require('../models/Record')
+const customModel = require('../models/Custom')
 const dateUtil = require('./DateUtil')
 
 /* 获取用户所有网站的总览 */
@@ -164,3 +165,73 @@ module.exports.getSVisitor = async function (config, days) {
     }
     return [activeIpNum, inActiveIpNum, lostIpNum]
 }
+
+/* 查询某时间段内的自定义事件数据
+ * days：该天到今天的天数
+ */
+module.exports.getEvents = async function (config, days) {
+    let allEvents = {}
+    let catEvents = {}
+    let actEvents = {}
+    let labEvents = {}
+    const events = await customModel.getEventsByDate(config, dateUtil.getTimePre(days - 1), dateUtil.getTimeSuf(0))
+    events.forEach(event => {
+        let p = `${event.category} + ${event.action} + ${event.label}`
+        allEvents[p] = allEvents[p] || {count:0 , ips: new Set()}
+        allEvents[p].count ++
+        allEvents[p].ips.add(event.ip)
+
+
+        catEvents[event.category] = catEvents[event.category] || {count:0 , ips: new Set()}
+        catEvents[event.category].count ++
+        catEvents[event.category].ips.add(event.ip)
+
+        actEvents[event.action] = actEvents[event.action] || {count:0 , ips: new Set()}
+        actEvents[event.action].count ++
+        actEvents[event.action].ips.add(event.ip)
+        if(event.label){
+            labEvents[event.label] = labEvents[event.label] || {count:0 , ips: new Set()}
+            labEvents[event.label].count ++
+            labEvents[event.label].ips.add(event.ip)
+        }
+    })
+    let allEventData = []
+    let catEventData = []
+    let actEventData = []
+    let labEventData = []
+    for (let name in allEvents) {
+        allEventData.push({
+            name: name,
+            count: allEvents[name].count,
+            ipCount: allEvents[name].ips.size
+        })
+    }
+    for (let name in catEvents) {
+        catEventData.push({
+            name: name,
+            count: catEvents[name].count,
+            ipCount: catEvents[name].ips.size
+        })
+    }
+    for (let name in actEvents) {
+        actEventData.push({
+            name: name,
+            count: actEvents[name].count,
+            ipCount: actEvents[name].ips.size
+        })
+    }
+    for (let name in labEvents) {
+        labEventData.push({
+            name: name,
+            count: labEvents[name].count,
+            ipCount: labEvents[name].ips.size
+        })
+    }
+    return {
+        allEventData,
+        catEventData,
+        actEventData,
+        labEventData
+    }
+}
+

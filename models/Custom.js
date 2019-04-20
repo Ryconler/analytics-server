@@ -1,31 +1,31 @@
-const recordModel = require('./sequelize').record
+const customModel = require('./sequelize').custom
 const Op = require('./sequelize').Op
 const sequelize = require('./sequelize').sequelize
 
-class Record {
+class Custom {
 
-    static async createRecord(record) {
-        return await recordModel.create(record)
+    static async createCustom(custom) {
+        return await customModel.create(custom)
     }
 
-    static async deleteRecordsByConfig(config) {
-        return await recordModel.destroy({
+    static async deleteCustomByConfig(config) {
+        return await customModel.destroy({
             where:{
                 config
             }
         })
     }
 
-    static async getRecordById(id) {
-        return await recordModel.findOne({
+    static async getCustomById(id) {
+        return await customModel.findOne({
             where: {
                 id
             }
         })
     }
 
-    static async updateRecord(config, open_time, newURL, newOpenTime) {
-        return await recordModel.update({
+    static async updateCustom(config, open_time, newURL, newOpenTime) {
+        return await customModel.update({
             urls: sequelize.fn('CONCAT', sequelize.col('urls'), ',', newURL),
             open_times: sequelize.fn('CONCAT', sequelize.col('open_times'), ',', newOpenTime),
         }, {
@@ -37,7 +37,7 @@ class Record {
     }
 
     static async addCloseTime(config, open_time, close_time) {
-        return await recordModel.update({
+        return await customModel.update({
             close_time: close_time,
         }, {
             where: {
@@ -50,20 +50,27 @@ class Record {
         })
     }
 
-    static async getRecordsByDate(config, preTime, sufTime) {
-        return await recordModel.findAll({
+    static async getEventsByDate(config, preTime, sufTime) {
+        return await customModel.findAll({
             where: {
                 config,
-                open_time: {
+                time: {
                     [Op.between]: [preTime, sufTime]
+                },
+                track: 'event',
+                category: {
+                    [Op.ne]: null
+                },
+                action: {
+                    [Op.ne]: null
                 }
             },
             raw: true
         })  // => [ { count: 1 }, { count: 25 } ]
     }
 
-    static async getLimitRecords(config, offset, limit) {
-        return await recordModel.findAll({
+    static async getLimitCustoms(config, offset, limit) {
+        return await customModel.findAll({
             where: {
                 config
             },
@@ -74,16 +81,16 @@ class Record {
         })  // => [ { count: 1 }, { count: 25 } ]
     }
 
-    static async getRecordsCount(config) {
-        return await recordModel.count({
+    static async getCustomsCount(config) {
+        return await customModel.count({
             where: {
                 config
             }
         })
     }
 
-    static async getRecordsByIp(config, ip) {
-        return await recordModel.findAll({
+    static async getCustomsByIp(config, ip) {
+        return await customModel.findAll({
             where: {
                 config,
                 ip
@@ -93,7 +100,7 @@ class Record {
     }
 
     static async getReIps(config) {
-        return await recordModel.findAll({
+        return await customModel.findAll({
             attributes: ['ip', [sequelize.fn('COUNT', sequelize.col('ip')), 'count']],
             where: {
                 config
@@ -110,7 +117,7 @@ class Record {
 }
 
 // (async () => {
-//     console.log(await Record.deleteRecordsByConfig('xxxxx'));
+//     console.log(await Custom.getEventsByDate('WA-PEEIE2MMEV-1',1555573707549,1555742805750));
 // })()
-module.exports = Record
+module.exports = Custom
 

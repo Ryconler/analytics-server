@@ -131,6 +131,45 @@ module.exports.website=sequelize.define('website',{
     },
 }, {tableName: 'website',timestamps: false});
 
+module.exports.custom=sequelize.define('custom',{
+    id:{
+        type: Sequelize.INTEGER(11),
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    config: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+    },
+    track: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+    },
+    category: {
+        type: Sequelize.STRING(255),
+    },
+    action: {
+        type: Sequelize.STRING(255),
+    },
+    label: {
+        type: Sequelize.STRING(255),
+    },
+    value: {
+        type: Sequelize.STRING(255),
+    },
+    url: {
+        type: Sequelize.STRING(255),
+    },
+    ip: {
+        type: Sequelize.STRING(255),
+    },
+    time: {
+        type: Sequelize.STRING(20),
+        allowNull: false,
+    }
+}, {tableName: 'custom',timestamps: false});
+
 module.exports.Op = Sequelize.Op
 module.exports.sequelize = sequelize
 

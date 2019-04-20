@@ -4,6 +4,7 @@ const dateUtil = require('../utils/DateUtil')
 const dataUtil = require('../utils/DataUtil')
 const websiteModel = require('../models/Website')
 const recordModel = require('../models/Record')
+const customModel = require('../models/Custom')
 
 
 class WebsiteController {
@@ -62,7 +63,7 @@ class WebsiteController {
         if (params.host && params.index_url) {
             let website = {
                 u_id: user.id,
-                config: 'WA-' + Math.random().toString(36).substr(2, 10).toUpperCase() + '-' + user.id, // 随机生成10位的数字英文字符串加上用户id
+                config: 'WA-' + Math.random().toString(36).substr(2, 6).toUpperCase() + '-' + user.id, // 随机生成10位的数字英文字符串加上用户id
                 host: params.host,
                 index_url: params.index_url,
                 title: params.title,
@@ -80,6 +81,39 @@ class WebsiteController {
             ctx.body = {
                 status: 4,
                 message: '添加失败',
+            }
+        }
+    }
+    static async updateWebsite(ctx) {
+        const website = ctx.request.body
+        if (website.id && website.host && website.index_url) {
+            await websiteModel.updateWebsite(website)
+            ctx.body = {
+                status: 2,
+                message: '修改成功',
+            }
+        }else {
+            ctx.body = {
+                status: 4,
+                message: '修改失败',
+            }
+        }
+    }
+
+    static async deleteWebsite(ctx) {
+        const config = ctx.params.config
+        if (config) {
+            websiteModel.deleteWebsiteByConfig(config)
+            recordModel.deleteRecordsByConfig(config)
+            customModel.deleteCustomByConfig(config)
+            ctx.body = {
+                status: 2,
+                message: '删除成功',
+            }
+        }else {
+            ctx.body = {
+                status: 4,
+                message: '删除失败',
             }
         }
     }
@@ -238,6 +272,44 @@ class WebsiteController {
                 status: 2,
                 message: '获取成功',
                 svisitor: svisitor
+            }
+        } else {
+            ctx.body = {
+                status: 4,
+                message: '缺少参数'
+            }
+        }
+
+    }
+
+    static async getEventByDate(ctx) {
+        const config = ctx.params.config
+        const days = ctx.query.days
+        if (config && days) {
+            const events = await dataUtil.getEvents(config, days)
+            ctx.body = {
+                status: 2,
+                message: '获取成功',
+                events: events
+            }
+        } else {
+            ctx.body = {
+                status: 4,
+                message: '缺少参数'
+            }
+        }
+
+    }
+
+    static async getEventCompare(ctx) {
+        const config = ctx.params.config
+        const days = ctx.query.days
+        if (config && days) {
+            const compare = await dataUtil.getCompare(config, days)
+            ctx.body = {
+                status: 2,
+                message: '获取成功',
+                compare: compare
             }
         } else {
             ctx.body = {

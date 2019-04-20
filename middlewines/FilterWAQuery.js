@@ -1,18 +1,19 @@
 const recordModel = require('../models/Record')
+const customModel = require('../models/Custom')
 const websiteModel = require('../models/Website')
 const clientUtil = require('../utils/ClientUtil')
 const api = require('../utils/ApiUtil')
 
 module.exports = async (ctx, next) => {
+    const query = ctx.query
     await next()
     if (ctx.path === '/resources/images/wa.gif') {
-        const query = ctx.query
         const headers = ctx.headers
-        if (!query.closeTime) {  // 打开页面
+        if (!query.closeTime && query.config) {  // 打开页面
             if (query.first === '1') {  // 第一次打开，创建记录
                 const {device, os, browserName} = clientUtil.getClient(headers['user-agent'], query.appName)
                 const record = {
-                    config: query.config || 'unknown',
+                    config: query.config,
                     open_time: query.openTime,
                     open_times: query.openTime,
                     close_time: '',
@@ -50,5 +51,21 @@ module.exports = async (ctx, next) => {
         // if(!wa_opens){
         //     cookies.set('wa_opens',Date.now(),{httpOnly: false,overwrite: true})
         // }
+    }
+    if (ctx.path === '/resources/images/custom.gif') {
+        if (query.config && query.track){
+            let custom = {
+                config: query.config,
+                track: query.track,
+                category: query.category || '',
+                action: query.action || '',
+                label: query.label || '',
+                value: query.value || '',
+                url: query.url,
+                ip: query.ip,
+                time: Date.now(),
+            }
+            await customModel.createCustom(custom)
+        }
     }
 }
