@@ -41,6 +41,7 @@ module.exports.getOverview = async function (uid) {
         }
         website.ad = ad
         website.ol = online
+        website.name = website.host + ' - ' + website.title
     }
     // console.log(websites);
     return websites
