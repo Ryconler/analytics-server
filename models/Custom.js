@@ -69,6 +69,28 @@ class Custom {
         })  // => [ { count: 1 }, { count: 25 } ]
     }
 
+    static async getConversionsByDate(config, preTime, sufTime) {
+        return await customModel.findAll({
+            where: {
+                config,
+                time: {
+                    [Op.between]: [preTime, sufTime]
+                },
+                track: 'conversion',
+                category: {
+                    [Op.ne]: null
+                },
+                action: {
+                    [Op.ne]: null
+                },
+                label: {
+                    [Op.ne]: null
+                }
+            },
+            raw: true
+        })  // => [ { count: 1 }, { count: 25 } ]
+    }
+
     static async getLimitCustoms(config, offset, limit) {
         return await customModel.findAll({
             where: {
@@ -117,7 +139,7 @@ class Custom {
 }
 
 // (async () => {
-//     console.log(await Custom.getEventsByDate('WA-PEEIE2MMEV-1',1555573707549,1555742805750));
+//     console.log(await Custom.getConversionsByDate('WA-7061Q7-1',1555573707549,1558332100888));
 // })()
 module.exports = Custom
 

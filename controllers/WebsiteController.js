@@ -301,15 +301,20 @@ class WebsiteController {
 
     }
 
-    static async getEventCompare(ctx) {
+    static async getConversionByDate(ctx) {
         const config = ctx.params.config
         const days = ctx.query.days
         if (config && days) {
-            const compare = await dataUtil.getCompare(config, days)
+            const conversion = await dataUtil.getConversions(config, days)
+            /* 格式
+            let c = {
+                '注册转化':[['首页','注册页'],[120,45]]
+            }
+            */
             ctx.body = {
                 status: 2,
                 message: '获取成功',
-                compare: compare
+                conversion: conversion
             }
         } else {
             ctx.body = {
@@ -319,6 +324,8 @@ class WebsiteController {
         }
 
     }
+
+
 }
 
 module.exports = WebsiteController

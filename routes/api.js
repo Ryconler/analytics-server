@@ -27,7 +27,7 @@ router.get('/websites/website/records/:config', webCtrl.getLimitRecords)  // 获
 router.get('/websites/website/novisitor/:config',webCtrl.getONVisitor)  // 获取具体网站在某个时间段的新旧访客信息
 router.get('/websites/website/svisitor/:config',webCtrl.getSVisitor)  // 获取具体网站的用户存留信息
 router.get('/websites/website/event/:config',webCtrl.getEventByDate)  // 获取具体网站的自定义事件数据
-router.get('/websites/website/event-compare/:config',webCtrl.getEventCompare)  // 获取具体网站的自定义事件数据比较
+router.get('/websites/website/conversion/:config',webCtrl.getConversionByDate)  // 获取具体网站的自定义事件数据
 
 router.post('/websites/website', webCtrl.addWebsite)  // 添加一个网站
 router.put('/websites/website', webCtrl.updateWebsite)  // 修改一个网站

@@ -236,3 +236,20 @@ module.exports.getEvents = async function (config, days) {
     }
 }
 
+/* 查询某时间段内的转化数据
+ * days：该天到今天的天数
+ */
+module.exports.getConversions = async function (config, days) {
+    let conversions = {}
+    const results = await customModel.getConversionsByDate(config, dateUtil.getTimePre(days - 1), dateUtil.getTimeSuf(0))
+    results.forEach(result => {
+        let queue = parseInt(result.label)
+        if(queue){
+            conversions[result.category] = conversions[result.category] || [[],[]]
+            conversions[result.category][0][queue-1] = result.action
+            conversions[result.category][1][queue-1] = conversions[result.category][1][queue-1]?conversions[result.category][1][queue-1]+1:1
+        }
+    })
+    return conversions
+}
+

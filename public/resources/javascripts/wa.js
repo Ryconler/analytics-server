@@ -121,7 +121,7 @@
         params.openTime = firstTime
         if (firstOpen) {  // 第一次打开
             params.first = 1
-            params.referrer = document.referrer
+            params.referrer = document.referrer //
             params.host = window.location.host
             params.width = window.screen.width || '';  //显示器屏幕宽度
             params.height = window.screen.height || '';  //显示器屏幕高度
@@ -130,6 +130,7 @@
             params.ip = ipData[0]
             params.address = ipData[1]
             params.service = ipData[2]
+            // console.log(params);
             image.src = server + '/resources/images/wa.gif?' + params2string(params);
         } else {  // 不是第一次打开
             params.first = 0
