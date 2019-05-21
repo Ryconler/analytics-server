@@ -16,6 +16,8 @@ module.exports = async (ctx, next) => {
                 if (ip.indexOf('127.0.0.1') === -1) {  // 获得了真实地址
                     api.getIpInfo(ip, function (data) {
                         const {device, os, browserName} = clientUtil.getClient(headers['user-agent'], query.appName)
+                        const city = data.city
+                        const isp = data.isp
                         const record = {
                             config: query.config,
                             open_time: query.openTime,
@@ -24,8 +26,8 @@ module.exports = async (ctx, next) => {
                             url: query.url,
                             urls: query.url,
                             ip: ip,
-                            address: (data.city.toLowerCase() === '' || 'xx')?'未知':data.city,
-                            service: (data.isp.toLowerCase() === '' || 'xx')?'未知':data.isp,
+                            address: (city.toLowerCase() === 'xx' || city === '') ? '未知' : data.city,
+                            service: (isp.toLowerCase() === 'xx' || isp === '') ? '未知' : data.isp,
                             referrer: query.referrer,
                             wxh: query.width + 'x' + query.height,
                             depth: query.colorDepth,
