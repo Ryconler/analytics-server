@@ -7,7 +7,6 @@ module.exports.getIpInfo = function (ip, callback) {
             /*把字符串转换为json*/
             console.log(body);
             const json = JSON.parse(body);
-            console.log(json);
             /*渲染模板*/
             callback && callback(json.data)
         }

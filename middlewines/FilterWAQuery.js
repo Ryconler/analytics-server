@@ -12,6 +12,7 @@ module.exports = async (ctx, next) => {
         if (!query.closeTime && query.config) {  // 打开页面
             if (query.first === '1') {  // 第一次打开，创建记录
                 let ip = ctx.ip
+                console.log(ip);
                 // ip = '223.104.4.135'
                 if (ip.indexOf('127.0.0.1') === -1) {
                     api.getIpInfo(ip, function (data) {
