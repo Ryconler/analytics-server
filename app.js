@@ -11,6 +11,7 @@ const jwt=require('koa-jwt')
 const index = require('./routes/index')
 const api = require('./routes/api')
 
+app.proxy = true
 /* 错误处理 */
 onerror(app)
 app.use(require('./middlewines/CatchError'))
