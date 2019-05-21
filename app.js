@@ -11,6 +11,7 @@ const jwt=require('koa-jwt')
 const index = require('./routes/index')
 const api = require('./routes/api')
 
+/* 使用了反向代理，保证后面可以获取真实ip地址 */
 app.proxy = true
 /* 错误处理 */
 onerror(app)

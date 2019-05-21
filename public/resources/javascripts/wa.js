@@ -43,7 +43,7 @@
         return args
     }
 
-    /* 获取用户的ip和地区信息 */
+    /* 获取用户的ip和地区信息（已弃用） */
     function getAddress(callback) {
         const xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("microsoft.XMLHttp")
         const url = 'https://api.ttt.sh/ip/qqwry'
@@ -86,7 +86,7 @@
 
 
     /* 为waData设置代理 */
-    function proxy(ipData){
+    function proxy(){
         waData = new Proxy(waData, {
             set: function (target, property, value) {
                 if (value && typeof value==='object' && value[0] && value[1]){
@@ -98,7 +98,6 @@
                         value: value[4] || '',
                         config: params.config,
                         url: document.URL,
-                        ip: ipData[0]
                     }
                     let img = new Image(0,0)
                     img.src = server + '/resources/images/custom.gif?' + params2string(customParams)
@@ -110,7 +109,7 @@
 
 
     /* 初始化 */
-    function init(ipData) {
+    function init() {
         let image = new Image(0, 0)
         const key = 'wa_' + params.config
         const waOpen = localStorage.getItem(key) || ''  // 型如：1586592534516,1586592534516  最近一次打开，第一次打开
@@ -128,9 +127,6 @@
             params.height = window.screen.height || '';  //显示器屏幕高度
             params.colorDepth = window.screen.colorDepth || '';// 颜色深度
             params.appName = navigator.appName
-            params.ip = ipData[0]
-            params.address = ipData[1]
-            params.service = ipData[2]
             // console.log(params);
             image.src = server + '/resources/images/wa.gif?' + params2string(params);
         } else {  // 不是第一次打开
@@ -167,10 +163,15 @@
         }
     }
 
+    init()
+    proxy()
+
+    /*
     getAddress(function (data) {
         init(data)
         proxy(data)
     })
+     */
 
 })();
 

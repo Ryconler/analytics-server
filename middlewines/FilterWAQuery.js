@@ -13,8 +13,7 @@ module.exports = async (ctx, next) => {
             if (query.first === '1') {  // 第一次打开，创建记录
                 let ip = ctx.ip
                 console.log(ip);
-                // ip = '223.104.4.135'
-                if (ip.indexOf('127.0.0.1') === -1) {
+                if (ip.indexOf('127.0.0.1') === -1) {  // 获得了真实地址
                     api.getIpInfo(ip, function (data) {
                         const {device, os, browserName} = clientUtil.getClient(headers['user-agent'], query.appName)
                         const record = {
@@ -25,8 +24,8 @@ module.exports = async (ctx, next) => {
                             url: query.url,
                             urls: query.url,
                             ip: ip,
-                            address: data.city || '未知',
-                            service: data.isp || '未知',
+                            address: (data.city.toLowerCase() === '' || 'xx')?'未知':data.city,
+                            service: (data.isp.toLowerCase() === '' || 'xx')?'未知':data.isp,
                             referrer: query.referrer,
                             wxh: query.width + 'x' + query.height,
                             depth: query.colorDepth,
@@ -69,7 +68,7 @@ module.exports = async (ctx, next) => {
                 label: query.label || '',
                 value: query.value || '',
                 url: query.url,
-                ip: query.ip,
+                ip: ctx.ip,
                 time: Date.now(),
             }
             await customModel.createCustom(custom)
