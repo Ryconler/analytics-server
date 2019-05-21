@@ -10,8 +10,6 @@ function validateUsr(val) {
 }
 
 function validatePsw(val) {
-    val = val || ''
-    val = val.trim()
     const reg = /^[\x20-\x7E]*$/;  //包含所有ASCII字符（含空格）
     if (val.length < 6 || val.length > 16) {
         return false
@@ -29,4 +27,8 @@ function validateEml(val) {
 
 module.exports.register = function (...args) {
     return validateUsr(args[0]) && validatePsw(args[1]) && validateEml(args[2]);
+}
+
+module.exports.password = function (psw) {
+    return validatePsw(psw)
 }

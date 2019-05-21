@@ -100,7 +100,7 @@
                         url: document.URL,
                         ip: ipData[0]
                     }
-                    let img = new Image(1,1)
+                    let img = new Image(0,0)
                     img.src = server + '/resources/images/custom.gif?' + params2string(customParams)
                 }
                 return true
@@ -108,9 +108,10 @@
         })
     }
 
+
     /* 初始化 */
     function init(ipData) {
-        let image = new Image(1, 1)
+        let image = new Image(0, 0)
         const key = 'wa_' + params.config
         const waOpen = localStorage.getItem(key) || ''  // 型如：1586592534516,1586592534516  最近一次打开，第一次打开
         const latestTime = parseInt(waOpen.split(',')[0]) || 0
@@ -137,15 +138,32 @@
             image.src = server + '/resources/images/wa.gif?' + params2string(params);
         }
 
-        /* 关闭页面时 */
-        window.onbeforeunload = function () {
-            const closeParams = {
-                openTime: firstTime,
-                config: params.config,
-                closeTime: Date.now()
+        const ua = navigator.userAgent
+        if (ua.indexOf("Android") !== -1 ||
+            ua.indexOf("iPhone") !== -1 ||
+            ua.indexOf("SymbianOS") !== -1 ||
+            ua.indexOf("Windows Phone") !== -1 ||
+            ua.indexOf("iPad") !== -1 ||
+            ua.indexOf("iPod") !== -1) {  // 移动端关闭页面事件
+            document.addEventListener('visibilitychange',function () {
+                if(document.hidden){
+                    const closeParams = {
+                        openTime: firstTime,
+                        config: params.config,
+                        closeTime: Date.now()
+                    }
+                    image.src = server + '/resources/images/wa.gif?' + params2string(closeParams);
+                }
+            })
+        }else { // PC端关闭页面事件
+            window.onbeforeunload = function () {
+                const closeParams = {
+                    openTime: firstTime,
+                    config: params.config,
+                    closeTime: Date.now()
+                }
+                image.src = server + '/resources/images/wa.gif?' + params2string(closeParams);
             }
-            /* 再发送一次关闭请求 */
-            image.src = server + '/resources/images/wa.gif?' + params2string(closeParams);
         }
     }
 

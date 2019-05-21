@@ -1,5 +1,6 @@
 const userModel = require('../models/User')
 const registerValidator = require('../utils/Validator').register  //自定义的必填字段验证器
+const passwordValidator = require('../utils/Validator').password
 const tokenUtil = require('../utils/TokenUtil')
 const pswUtil = require('../utils/PasswordUtil')
 const dateUtil = require('../utils/DateUtil')
@@ -106,7 +107,43 @@ class UserController {
         }
     }
 
+    static async changePassword(ctx) {
+        const changeInfo = ctx.request.body
+        if (changeInfo.oldPsw && changeInfo.email && changeInfo.username && passwordValidator(changeInfo.newPsw)) {
+            const user = await userModel.getUserByUsername(changeInfo.username)
+            if(user){
+                if(!await pswUtil.compare(changeInfo.oldPsw, user.password)){
+                    ctx.body = {
+                        status: 4,
+                        message: '旧密码错误',
+                    }
+                }else if(changeInfo.email!==user.email){
+                    ctx.body = {
+                        status: 4,
+                        message: '注册邮箱错误',
+                    }
+                }else {
+                    const newPswHash = await pswUtil.hash(changeInfo.newPsw)
+                    await userModel.updateUserPassword({newPswHash,id:user.id})
+                    ctx.body = {
+                        status: 2,
+                        message: '更改成功',
+                    }
+                }
+            }else {
+                ctx.body = {
+                    status: 4,
+                    message: '用户不存在',
+                }
+            }
+        }else {
+            ctx.body = {
+                status: 4,
+                message: '缺少字段',
+            }
+        }
 
+    }
 }
 
 module.exports = UserController

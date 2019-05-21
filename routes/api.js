@@ -15,6 +15,7 @@ router.get('/users/user', userCtrl.getUser)  // 获取单个用户所有信息
 router.post('/users/login', userCtrl.login)  // 登录验证（无需token验证）
 router.post('/users/register', userCtrl.register)  // 注册验证（无需token验证）
 router.post('/users/username', userCtrl.getUsername)  // 注册是获取用户名是否被注册 （无需token验证）
+router.put('/users/change/password', userCtrl.changePassword)  // 修改用户密码
 
 /* 网站部分 */
 router.get('/websites/website/:id',webCtrl.getWebsite) // 获取某个具体网站

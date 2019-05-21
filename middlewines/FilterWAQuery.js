@@ -11,25 +11,31 @@ module.exports = async (ctx, next) => {
         const headers = ctx.headers
         if (!query.closeTime && query.config) {  // 打开页面
             if (query.first === '1') {  // 第一次打开，创建记录
-                const {device, os, browserName} = clientUtil.getClient(headers['user-agent'], query.appName)
-                const record = {
-                    config: query.config,
-                    open_time: query.openTime,
-                    open_times: query.openTime,
-                    close_time: '',
-                    url: query.url,
-                    urls: query.url,
-                    ip: query.ip,
-                    address: query.address,
-                    service: query.service,
-                    referrer: query.referrer,
-                    wxh: query.width + 'x' + query.height,
-                    depth: query.colorDepth,
-                    device: device,
-                    os: os,
-                    browser_name: browserName
+                let ip = ctx.ip
+                // ip = '223.104.4.135'
+                if (ip.indexOf('127.0.0.1') === -1) {
+                    api.getIpInfo(ip, function (data) {
+                        const {device, os, browserName} = clientUtil.getClient(headers['user-agent'], query.appName)
+                        const record = {
+                            config: query.config,
+                            open_time: query.openTime,
+                            open_times: query.openTime,
+                            close_time: '',
+                            url: query.url,
+                            urls: query.url,
+                            ip: ip,
+                            address: data.city || '未知',
+                            service: data.isp || '未知',
+                            referrer: query.referrer,
+                            wxh: query.width + 'x' + query.height,
+                            depth: query.colorDepth,
+                            device: device,
+                            os: os,
+                            browser_name: browserName
+                        }
+                        recordModel.createRecord(record)
+                    })
                 }
-                await recordModel.createRecord(record)
             } else {  // 不是第一次打开，跟新记录
                 await recordModel.updateRecord(query.config, query.openTime, query.url, Date.now().toString())
             }
@@ -53,7 +59,7 @@ module.exports = async (ctx, next) => {
         // }
     }
     if (ctx.path === '/resources/images/custom.gif') {
-        if (query.config && query.track){
+        if (query.config && query.track) {
             let custom = {
                 config: query.config,
                 track: query.track,
