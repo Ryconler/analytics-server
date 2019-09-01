@@ -1,6 +1,6 @@
 (function () {
-    // const server = 'http://analytics.server.jessezhu.cn'
-    const server = 'http://127.0.0.1:4000'
+    const server = 'http://analytics.server.jessezhu.cn';
+    // const server = 'http://127.0.0.1:4000'
     const dateNow = Date.now()
     const params = {};
     /* 网站标识 */

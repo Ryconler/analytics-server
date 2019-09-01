@@ -20,7 +20,7 @@ app.use(require('./middlewines/CatchError'))
 app.use(logger())
 /* 跨域设置 */
 app.use(cors({
-    origin: process.env.NODE_ENV==='production'?'http://analytics.wzmxx.com':'http://localhost:8080',
+    origin: require('../config/index').baseURL,
     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
     maxAge: 5,
     credentials: true,  // 跨域cookie
