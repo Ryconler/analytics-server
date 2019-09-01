@@ -12,7 +12,7 @@ module.exports = async (ctx, next) => {
         if (!query.closeTime && query.config) {  // 打开页面
             if (query.first === '1') {  // 第一次打开，创建记录
                 let ip = ctx.ip
-                console.log(ip);
+                // console.log(ip);
                 if (ip.indexOf('127.0.0.1') === -1) {  // 获得了真实地址
                     api.getIpInfo(ip, function (data) {
                         const {device, os, browserName} = clientUtil.getClient(headers['user-agent'], query.appName)

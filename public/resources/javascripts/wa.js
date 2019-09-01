@@ -1,6 +1,6 @@
 (function () {
-    const server = 'http://analytics.server.jessezhu.cn'
-    // const server = 'http://127.0.0.1:4000'
+    // const server = 'http://analytics.server.jessezhu.cn'
+    const server = 'http://127.0.0.1:4000'
     const dateNow = Date.now()
     const params = {};
     /* 网站标识 */
@@ -127,7 +127,7 @@
             params.height = window.screen.height || '';  //显示器屏幕高度
             params.colorDepth = window.screen.colorDepth || '';// 颜色深度
             params.appName = navigator.appName
-            // console.log(params);
+            console.log(params);
             image.src = server + '/resources/images/wa.gif?' + params2string(params);
         } else {  // 不是第一次打开
             params.first = 0

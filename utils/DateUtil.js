@@ -106,6 +106,9 @@ module.exports.getTimeSufByTime = function (time) {
     // console.log(new Date('2019-03-29 23:59:59').getTime());
     return time - milliseconds + seconds * 1000 + minutes * 60 * 1000 + hours * 60 * 60 * 1000
 }
-// console.log(this.getTimePre(1));
-// console.log(this.getTimeSuf(1));
+// console.log(this.getTimePre(28));
+// console.log(this.getTimeSuf(28));
+
+
+
 // console.log(this.toTimeString(12456789));
