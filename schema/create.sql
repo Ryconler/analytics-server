@@ -94,3 +94,12 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 INSERT INTO `user` VALUES (1, 'zhuxingjie', '$2a$10$bjKNpuUn397uooCfV/BQHOwcN6jGohMsTXFLbfWPTzh6.QHUZGxi2', 'ryconler@icloud.com', '2020-06-13 12:18:12');
 INSERT INTO `website` VALUES (1, 1, 'WA-LNH5FK-1', 'analytics.jessezhu.cn', 'http://analytics.jessezhu.cn', 'JesseZhu的用户行为分析平台', '2020-06-13 12:29:34', '0'
+INSERT INTO `custom`(`id`, `config`, `track`, `category`, `action`, `label`, `value`, `url`, `ip`, `time`) VALUES (1, 'WA-LNH5FK-1', 'event', '登录按钮', '点击', '登录', NULL, 'http://analytics.jessezhu.cn/login', '101.245.241.102', '1592027918931');
+INSERT INTO `custom`(`id`, `config`, `track`, `category`, `action`, `label`, `value`, `url`, `ip`, `time`) VALUES (2, 'WA-LNH5FK-1', 'conversion', '注册转化', '注册页面', '1', NULL, 'http://analytics.jessezhu.cn/register', '101.245.241.102', '1592027918931');
+INSERT INTO `custom`(`id`, `config`, `track`, `category`, `action`, `label`, `value`, `url`, `ip`, `time`) VALUES (3, 'WA-LNH5FK-1', 'conversion', '注册转化', '注册页面', '1', NULL, 'http://analytics.jessezhu.cn/register', '101.245.241.102', '1592027918931');
+INSERT INTO `custom`(`id`, `config`, `track`, `category`, `action`, `label`, `value`, `url`, `ip`, `time`) VALUES (4, 'WA-LNH5FK-1', 'conversion', '注册转化', '注册成功', '2', NULL, 'http://analytics.jessezhu.cn/register', '101.245.241.102', '1592027918931');
+INSERT INTO `custom`(`id`, `config`, `track`, `category`, `action`, `label`, `value`, `url`, `ip`, `time`) VALUES (5, 'WA-LNH5FK-1', 'event', '登录按钮', '点击', '登录', NULL, 'http://analytics.jessezhu.cn/login', '101.245.241.102', '1592027918931');
+INSERT INTO `record`(`id`, `config`, `open_time`, `close_time`, `url`, `urls`, `open_times`, `ip`, `address`, `service`, `referrer`, `wxh`, `depth`, `device`, `os`, `browser_name`, `browser_version`) 
+  VALUES (1, 'WA-LNH5FK-1', '1592027918931', '1592029116717', 'http://analytics.jessezhu.cn/login', 'http://analytics.jessezhu.cn/login,http://analytics.jessezhu.cn/analytics', '1592027918931,1592028080219', '101.245.241.102', NULL, NULL, '', '1440x900', '30', 'pc', 'Mac/iOS', 'Chrome', NULL);
+INSERT INTO `record`(`id`, `config`, `open_time`, `close_time`, `url`, `urls`, `open_times`, `ip`, `address`, `service`, `referrer`, `wxh`, `depth`, `device`, `os`, `browser_name`, `browser_version`)
+  VALUES (2, 'WA-LNH5FK-1', '1592028849623', '1592029237155', 'http://localhost:8080/', 'http://localhost:8080/', '1592028849623', '101.245.241.102', NULL, NULL, '', '1440x900', '30', 'pc', 'Mac/iOS', 'Chrome', NULL);
