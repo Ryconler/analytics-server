@@ -1,5 +1,40 @@
-const websiteModel = require('./sequelize').website
+const sequelize = require('./sequelize').sequelize
+const Sequelize=require('sequelize')
 
+const websiteModel = sequelize.define('website',{
+  id:{
+      type: Sequelize.INTEGER(11),
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+  },
+  u_id:{
+      type: Sequelize.INTEGER(11),
+      allowNull: false,
+  },
+  config: {
+      type: Sequelize.STRING(255),
+      allowNull: false,
+  },
+  host: {
+      type: Sequelize.STRING(255),
+      allowNull: false,
+  },
+  index_url: {
+      type: Sequelize.STRING(255),
+  },
+  title: {
+      type: Sequelize.STRING(255),
+  },
+  create_date: {
+      type: Sequelize.STRING(20),
+      allowNull: false,
+  },
+  validate: {
+      type: Sequelize.STRING(1),
+      allowNull: false,
+  },
+}, {tableName: 'website',timestamps: false});
 
 class Website {
 

@@ -1,6 +1,66 @@
-const recordModel = require('./sequelize').record
+const sequelize = require('./sequelize').sequelize;
+const Sequelize=require('sequelize')
 const Op = require('./sequelize').Op
-const sequelize = require('./sequelize').sequelize
+
+
+const recordModel = sequelize.define('record',{
+    id:{
+        type: Sequelize.INTEGER(11),
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    config: {
+        type: Sequelize.STRING(255),
+        allowNull: false
+    },
+    open_time: {
+        type: Sequelize.INTEGER(20),
+    },
+    close_time: {
+        type: Sequelize.INTEGER(20),
+    },
+    url : {
+        type: Sequelize.STRING(255),
+    },
+    urls : {
+        type: Sequelize.STRING(2550),
+    },
+    open_times : {
+        type: Sequelize.STRING(2550),
+    },
+    ip: {
+        type: Sequelize.STRING(50),
+    },
+    address: {
+        type: Sequelize.STRING(255),
+    },
+    service: {
+        type: Sequelize.STRING(255),
+    },
+    referrer: {
+        type: Sequelize.STRING(255),
+    },
+    wxh: {
+        type: Sequelize.STRING(10),
+    },
+    depth: {
+        type: Sequelize.STRING(10),
+    },
+    device: {
+        type: Sequelize.STRING(10),
+    },
+    os: {
+        type: Sequelize.STRING(255),
+    },
+    browser_name: {
+        type: Sequelize.STRING(255),
+    },
+    browser_version: {
+        type: Sequelize.STRING(255),
+    },
+}, {tableName: 'record',timestamps: false});
+
 
 class Record {
 
