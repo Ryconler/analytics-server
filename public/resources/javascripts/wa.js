@@ -1,5 +1,5 @@
 (function () {
-    const server = 'http://analytics.jessezhu.cn';
+    const server = 'http://analytics.wzmxx.com';
     // const server = 'http://127.0.0.1:4000'
     const dateNow = Date.now()
     const params = {};
