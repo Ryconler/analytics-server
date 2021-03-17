@@ -70,7 +70,7 @@ INSERT INTO `record`(`id`, `config`, `open_time`, `close_time`, `url`, `ip`, `ad
 INSERT INTO `record`(`id`, `config`, `open_time`, `close_time`, `url`, `ip`, `address`, `service`, `referrer`, `wxh`, `depth`, `device`, `os`, `browser_name`, `browser_version`)
   VALUES (2, 'WA-LNH5FK-1', now(), now(), 'http://localhost:8080/', '101.245.241.102', NULL, NULL, '', '1440x900', '30', 'pc', 'Mac/iOS', 'Chrome', NULL);
 
-CREATE EVENT `analytics`.`无标题`
+CREATE EVENT `analytics`.`insert_record`
 ON SCHEDULE
 EVERY '200' MINUTE
 DO INSERT INTO record (config,open_time,close_time,url,ip,wxh,depth,device,os,browser_name)
