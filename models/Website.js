@@ -27,7 +27,7 @@ const websiteModel = sequelize.define('website',{
       type: Sequelize.STRING(255),
   },
   create_date: {
-      type: Sequelize.STRING(20),
+      type: Sequelize.DATE(),
       allowNull: false,
   },
   validate: {

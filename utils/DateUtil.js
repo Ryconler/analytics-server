@@ -9,27 +9,13 @@ module.exports.getNowTime = function () {
     const second = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
     return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
 }
-/* 指定数字时间转字符串 */
+/* 获取时期的年月日 */
 module.exports.toDayString = function (time) {
-    time = parseInt(time)
     const date = new Date(time)
     const year = date.getFullYear()
     const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
     const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
     return year + '-' + month + '-' + day
-}
-/* 秒数转字符串 */
-/* 指定数字时间转字符串 */
-module.exports.toTimeString = function (time) {
-    time = parseInt(time)
-    const date = new Date(time)
-    const year = date.getFullYear()
-    const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
-    const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
-    const hour = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
-    const minute = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
-    const second = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
-    return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
 }
 /* 秒数转字符串 */
 module.exports.toMinutesString = function (seconds) {
@@ -50,61 +36,41 @@ module.exports.getDiffSeconds = function (openTime, closeTime) {
     closeTime = parseInt(closeTime)
     return (new Date(closeTime).getTime() - new Date(openTime).getTime()) / 1000
 }
-/* 获取某天的0点字符串 */
+/* 获取某天的0点日期 */
 module.exports.getDatePre = function (num) {
     const date = new Date(Date.now() - num * 24 * 60 * 60 * 1000)
-    const year = date.getFullYear()
-    const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
-    const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
-    return year + '-' + month + '-' + day + ' 00:00:00'
+    date.setHours(0)
+    date.setMinutes(0)
+    date.setSeconds(0)
+    date.setMilliseconds(0)
+    return date
 }
-/* 获取某天的12点字符串 */
+/* 获取某天的23:59:59点日期 */
 module.exports.getDateSuf = function (num) {
     const date = new Date(Date.now() - num * 24 * 60 * 60 * 1000)
-    const year = date.getFullYear()
-    const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
-    const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
-    return year + '-' + month + '-' + day + ' 23:59:59'
+    date.setHours(23)
+    date.setMinutes(59)
+    date.setSeconds(59)
+    date.setMilliseconds(999)
+    return date
 }
-/* 获取某天的0点数字 */
-module.exports.getTimePre = function (num) {
-    const date = new Date(Date.now() - num * 24 * 60 * 60 * 1000)
-    const hours = date.getHours()
-    const minutes = date.getMinutes()
-    const seconds = date.getSeconds()
-    const milliseconds = date.getMilliseconds()
-    // console.log(new Date('2019-03-29 00:00:00').getTime());
-    return date.getTime() - milliseconds - seconds * 1000 - minutes * 60 * 1000 - hours * 60 * 60 * 1000
-}
-/* 获取某天的23:59:59点数字 */
-module.exports.getTimeSuf = function (num) {
-    const date = new Date(Date.now() - num * 24 * 60 * 60 * 1000)
-    const hours = 23 - date.getHours()
-    const minutes = 59 -date.getMinutes()
-    const seconds = 59 - date.getSeconds()
-    const milliseconds =  date.getMilliseconds()
-    // console.log(new Date('2019-03-29 23:59:59').getTime());
-    return date.getTime() - milliseconds + seconds * 1000 + minutes * 60 * 1000 + hours * 60 * 60 * 1000
-}
-/* 获取某个时间的0点数字 */
-module.exports.getTimePreByTime = function (time) {
-    const date = new Date(time)
-    const hours = date.getHours()
-    const minutes = date.getMinutes()
-    const seconds = date.getSeconds()
-    const milliseconds = date.getMilliseconds()
-    // console.log(new Date('2019-03-29 00:00:00').getTime());
-    return time - milliseconds - seconds * 1000 - minutes * 60 * 1000 - hours * 60 * 60 * 1000
+/* 获取某个时间的0点日期 */
+module.exports.getDatePreByDate = function (date) {
+    const newDate = new Date(date)
+    newDate.setHours(0)
+    newDate.setMinutes(0)
+    newDate.setSeconds(0)
+    newDate.setMilliseconds(0)
+    return newDate
 }
 /* 获取某时间的23:59:59点数字 */
-module.exports.getTimeSufByTime = function (time) {
-    const date = new Date(time)
-    const hours = 23 - date.getHours()
-    const minutes = 59 -date.getMinutes()
-    const seconds = 59 - date.getSeconds()
-    const milliseconds =  date.getMilliseconds()
-    // console.log(new Date('2019-03-29 23:59:59').getTime());
-    return time - milliseconds + seconds * 1000 + minutes * 60 * 1000 + hours * 60 * 60 * 1000
+module.exports.getDateSufByDate = function (date) {
+    const newDate = new Date(date)
+    date.setHours(23)
+    date.setMinutes(59)
+    date.setSeconds(59)
+    date.setMilliseconds(999)
+    return newDate
 }
 // console.log(this.getTimePre(28));
 // console.log(this.getTimeSuf(28));

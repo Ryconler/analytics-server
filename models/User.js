@@ -18,10 +18,10 @@ const userModel = sequelize.define('user',{
     },
     email: {
         type: Sequelize.STRING(50),
-        allowNull: false
+        allowNull: true
     },
     register_date: {
-        type: Sequelize.STRING(20),
+        type: Sequelize.DATE(),
         allowNull: false
     }
 }, {tableName: 'user',timestamps: false});

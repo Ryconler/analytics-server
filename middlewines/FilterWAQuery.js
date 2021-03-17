@@ -9,40 +9,34 @@ module.exports = async (ctx, next) => {
     await next()
     if (ctx.path === '/resources/images/wa.gif') {
         const headers = ctx.headers
-        if (!query.closeTime && query.config) {  // 打开页面
-            if (query.first === '1') {  // 第一次打开，创建记录
+        if (query.config) {
+            if (!query.closeTime) {  // 打开页面
                 let ip = ctx.ip
                 console.log(ip);
-                if (ip.indexOf('127.0.0.1') === -1) {  // 获得了真实地址
-                    api.getIpInfo(ip, function (data) {
-                        const {device, os, browserName} = clientUtil.getClient(headers['user-agent'], query.appName)
-                        const city = data.city
-                        const isp = data.isp
-                        const record = {
-                            config: query.config,
-                            open_time: query.openTime,
-                            open_times: query.openTime,
-                            close_time: '',
-                            url: query.url,
-                            urls: query.url,
-                            ip: ip,
-                            address: city,
-                            service: isp,
-                            referrer: query.referrer,
-                            wxh: query.width + 'x' + query.height,
-                            depth: query.colorDepth,
-                            device: device,
-                            os: os,
-                            browser_name: browserName
-                        }
-                        recordModel.createRecord(record)
-                    })
-                }
-            } else {  // 不是第一次打开，跟新记录
-                await recordModel.updateRecord(query.config, query.openTime, query.url, Date.now().toString())
+                api.getIpInfo(ip, function (data) {
+                    const { device, os, browserName } = clientUtil.getClient(headers['user-agent'], query.appName)
+                    const city = data.city
+                    const isp = data.isp
+                    const record = {
+                        config: query.config,
+                        open_time: new Date(parseInt(query.openTime)),
+                        close_time: null,
+                        url: query.url,
+                        ip: ip,
+                        address: city,
+                        service: isp,
+                        referrer: query.referrer,
+                        wxh: query.width + 'x' + query.height,
+                        depth: query.colorDepth,
+                        device: device,
+                        os: os,
+                        browser_name: browserName
+                    }
+                    recordModel.createRecord(record)
+                })
+            } else {  // 关闭页面，添加关闭时间字段
+                await recordModel.addCloseTime(query.config, new Date(parseInt(query.openTime)), new Date(parseInt(query.closeTime)))
             }
-        } else {  // 关闭页面，添加关闭时间字段
-            await recordModel.addCloseTime(query.config, query.openTime, query.closeTime)
         }
     }
 
@@ -71,7 +65,7 @@ module.exports = async (ctx, next) => {
                 value: query.value || '',
                 url: query.url,
                 ip: ctx.ip,
-                time: Date.now(),
+                create_time: new Date(),
             }
             await customModel.createCustom(custom)
         }

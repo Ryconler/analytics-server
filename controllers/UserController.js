@@ -55,7 +55,7 @@ class UserController {
                     username: params.username,
                     password: await pswUtil.hash(params.password),
                     email: params.email,
-                    register_date: dateUtil.getNowTime()
+                    register_date:  new Date()
                 }
                 user = await userModel.createUser(user)
                 delete user.password

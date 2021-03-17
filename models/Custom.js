@@ -35,8 +35,8 @@ const customModel = sequelize.define('custom',{
     ip: {
         type: Sequelize.STRING(255),
     },
-    time: {
-        type: Sequelize.STRING(20),
+    create_time: {
+        type: Sequelize.DATE(),
         allowNull: false,
     }
 }, {tableName: 'custom',timestamps: false});
@@ -63,37 +63,12 @@ class Custom {
         })
     }
 
-    static async updateCustom(config, open_time, newURL, newOpenTime) {
-        return await customModel.update({
-            urls: sequelize.fn('CONCAT', sequelize.col('urls'), ',', newURL),
-            open_times: sequelize.fn('CONCAT', sequelize.col('open_times'), ',', newOpenTime),
-        }, {
-            where: {
-                config,
-                open_time
-            }
-        })
-    }
-
-    static async addCloseTime(config, open_time, close_time) {
-        return await customModel.update({
-            close_time: close_time,
-        }, {
-            where: {
-                config,
-                open_time,
-                close_time: {
-                    [Op.lt]: close_time
-                }
-            }
-        })
-    }
 
     static async getEventsByDate(config, preTime, sufTime) {
         return await customModel.findAll({
             where: {
                 config,
-                time: {
+                create_time: {
                     [Op.between]: [preTime, sufTime]
                 },
                 track: 'event',
@@ -112,7 +87,7 @@ class Custom {
         return await customModel.findAll({
             where: {
                 config,
-                time: {
+                create_time: {
                     [Op.between]: [preTime, sufTime]
                 },
                 track: 'conversion',

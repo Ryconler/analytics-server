@@ -86,10 +86,10 @@
 
 
     /* 为waData设置代理 */
-    function proxy(){
+    function proxy() {
         waData = new Proxy(waData, {
             set: function (target, property, value) {
-                if (value && typeof value==='object' && value[0] && value[1]){
+                if (value && typeof value === 'object' && value[0] && value[1]) {
                     let customParams = {
                         track: value[0],
                         category: value[1],
@@ -99,7 +99,7 @@
                         config: params.config,
                         url: document.URL,
                     }
-                    let img = new Image(0,0)
+                    let img = new Image(0, 0)
                     img.src = server + '/resources/images/custom.gif?' + params2string(customParams)
                 }
                 return true
@@ -111,55 +111,36 @@
     /* 初始化 */
     function init() {
         let image = new Image(0, 0)
-        const key = 'wa_' + params.config
-        const waOpen = localStorage.getItem(key) || ''  // 型如：1586592534516,1586592534516  最近一次打开，第一次打开
-        const latestTime = parseInt(waOpen.split(',')[0]) || 0
-        const firstOpen = (dateNow - latestTime) > 1000 * 60 * 10  // 两次打开间隔小于10min仍属于同一次打开
-        const firstTime = firstOpen ? dateNow : waOpen.split(',')[1]
-        localStorage.setItem(key, dateNow + ',' + firstTime)  // 更新wa_open
         params.url = document.URL
-        params.openTime = firstTime
-        if (firstOpen) {  // 第一次打开
-            params.first = 1
-            params.referrer = document.referrer //
-            params.host = window.location.host
-            params.width = window.screen.width || '';  //显示器屏幕宽度
-            params.height = window.screen.height || '';  //显示器屏幕高度
-            params.colorDepth = window.screen.colorDepth || '';// 颜色深度
-            params.appName = navigator.appName
-            console.log(params);
-            image.src = server + '/resources/images/wa.gif?' + params2string(params);
-        } else {  // 不是第一次打开
-            params.first = 0
-            image.src = server + '/resources/images/wa.gif?' + params2string(params);
-        }
+        params.openTime = Date.now()
+        params.referrer = document.referrer //
+        params.host = window.location.host
+        params.width = window.screen.width || '';  //显示器屏幕宽度
+        params.height = window.screen.height || '';  //显示器屏幕高度
+        params.colorDepth = window.screen.colorDepth || '';// 颜色深度
+        params.appName = navigator.appName
+        console.log(params);
+        image.src = server + '/resources/images/wa.gif?' + params2string(params);
 
-        const ua = navigator.userAgent
-        if (ua.indexOf("Android") !== -1 ||
-            ua.indexOf("iPhone") !== -1 ||
-            ua.indexOf("SymbianOS") !== -1 ||
-            ua.indexOf("Windows Phone") !== -1 ||
-            ua.indexOf("iPad") !== -1 ||
-            ua.indexOf("iPod") !== -1) {  // 移动端关闭页面事件
-            document.addEventListener('visibilitychange',function () {
-                if(document.hidden){
-                    const closeParams = {
-                        openTime: firstTime,
-                        config: params.config,
-                        closeTime: Date.now()
-                    }
-                    image.src = server + '/resources/images/wa.gif?' + params2string(closeParams);
-                }
-            })
-        }else { // PC端关闭页面事件
-            window.onbeforeunload = function () {
+        // 移动端关闭页面事件
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
                 const closeParams = {
-                    openTime: firstTime,
+                    openTime: params.openTime,
                     config: params.config,
                     closeTime: Date.now()
                 }
                 image.src = server + '/resources/images/wa.gif?' + params2string(closeParams);
             }
+        })
+        // PC端关闭页面事件
+        window.onbeforeunload = function () {
+            const closeParams = {
+                openTime: params.openTime,
+                config: params.config,
+                closeTime: Date.now()
+            }
+            image.src = server + '/resources/images/wa.gif?' + params2string(closeParams);
         }
     }
 

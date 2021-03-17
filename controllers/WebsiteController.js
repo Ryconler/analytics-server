@@ -15,8 +15,8 @@ class WebsiteController {
         if (website && website.u_id === user.id) {
             if (query.ip) {
                 const records = await recordModel.getRecordsByIp(website.config, query.ip)
-                const todayPre = dateUtil.getTimePre(0)
-                const todaySuf = dateUtil.getTimeSuf(0)
+                const todayPre = dateUtil.getDatePre(0)
+                const todaySuf = dateUtil.getDateSuf(0)
                 let allVisit = 0
                 let thatDayVisit = 0
                 let isOld = false
@@ -67,7 +67,7 @@ class WebsiteController {
                 host: params.host,
                 index_url: params.index_url,
                 title: params.title,
-                create_date: dateUtil.getNowTime(),
+                create_date:  new Date(),
                 validate: '0'
             }
             website = await websiteModel.addWebsite(website)
@@ -213,14 +213,11 @@ class WebsiteController {
                 const offset = limit * (page - 1)
                 const records = await recordModel.getLimitRecords(config, offset, limit)
                 records.forEach(record => {
-                    const openTime = parseInt(record.open_time)
-                    const closeTime = parseInt(record.close_time)
-                    const urlsArr = (record.urls || '').split(',')
+                    const openTime = record.open_time.getTime()
+                    const closeTime = record.close_time && record.close_time.getTime()
                     const openTimesArr = (record.open_times || '').split(',')
                     record.open_time = openTime
                     record.duration = closeTime ? dateUtil.toMinutesString((closeTime - openTime) / 1000) : '正在访问'
-                    record.visitPages = urlsArr.length
-                    record.urls = urlsArr
                     record.open_times = openTimesArr
                 })
                 ctx.body = {

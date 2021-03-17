@@ -12,9 +12,8 @@ class RecordController {
         const record = await recordModel.getRecordById(recordId)
         if (record) {
             const ip = record.ip
-            const openTime = parseInt(record.open_time)
-            const dayPre = dateUtil.getTimePreByTime(openTime)
-            const daySuf = dateUtil.getTimeSufByTime(openTime)
+            const dayPre = dateUtil.getDatePreByDate(record.open_time)
+            const daySuf = dateUtil.getDateSufByDate(record.open_time)
             let allVisit = 0
             let thatDayVisit = 0
             let isOld = false

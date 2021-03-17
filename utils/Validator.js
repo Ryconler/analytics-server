@@ -26,7 +26,7 @@ function validateEml(val) {
 }
 
 module.exports.register = function (...args) {
-    return validateUsr(args[0]) && validatePsw(args[1]) && validateEml(args[2]);
+    return validateUsr(args[0]) && validatePsw(args[1])/*  && validateEml(args[2]) */;
 }
 
 module.exports.password = function (psw) {

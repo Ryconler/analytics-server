@@ -15,22 +15,16 @@ const recordModel = sequelize.define('record',{
         allowNull: false
     },
     open_time: {
-        type: Sequelize.INTEGER(20),
+        type: Sequelize.DATE(),
     },
     close_time: {
-        type: Sequelize.INTEGER(20),
+        type: Sequelize.DATE(),
     },
     url : {
         type: Sequelize.STRING(255),
     },
-    urls : {
-        type: Sequelize.STRING(2550),
-    },
-    open_times : {
-        type: Sequelize.STRING(2550),
-    },
     ip: {
-        type: Sequelize.STRING(50),
+        type: Sequelize.STRING(255),
     },
     address: {
         type: Sequelize.STRING(255),
@@ -42,13 +36,13 @@ const recordModel = sequelize.define('record',{
         type: Sequelize.STRING(255),
     },
     wxh: {
-        type: Sequelize.STRING(10),
+        type: Sequelize.STRING(255),
     },
     depth: {
-        type: Sequelize.STRING(10),
+        type: Sequelize.STRING(255),
     },
     device: {
-        type: Sequelize.STRING(10),
+        type: Sequelize.STRING(255),
     },
     os: {
         type: Sequelize.STRING(255),
@@ -84,17 +78,6 @@ class Record {
         })
     }
 
-    static async updateRecord(config, open_time, newURL, newOpenTime) {
-        return await recordModel.update({
-            urls: sequelize.fn('CONCAT', sequelize.col('urls'), ',', newURL),
-            open_times: sequelize.fn('CONCAT', sequelize.col('open_times'), ',', newOpenTime),
-        }, {
-            where: {
-                config,
-                open_time
-            }
-        })
-    }
 
     static async addCloseTime(config, open_time, close_time) {
         return await recordModel.update({
@@ -102,10 +85,7 @@ class Record {
         }, {
             where: {
                 config,
-                open_time,
-                close_time: {
-                    [Op.lt]: close_time
-                }
+                open_time
             }
         })
     }
